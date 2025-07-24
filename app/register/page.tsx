@@ -2,7 +2,7 @@
 
 import RegisterForm from "@/components/auth/register-form";
 import { useLanguage } from "@/lib/i18n/language-context";
-import { Logo } from "@/components/ui/Logo";
+import { Logo } from "@/components/ui/logo";
 
 export default function RegisterPage() {
   const { t } = useLanguage();
