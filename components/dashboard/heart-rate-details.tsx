@@ -6,9 +6,13 @@ interface HeartRateDetailsProps {
   max: number;
 }
 
-export default function HeartRateDetails({ rest, avg, max }: HeartRateDetailsProps) {
+export default function HeartRateDetails({
+  rest,
+  avg,
+  max,
+}: HeartRateDetailsProps) {
   return (
-    <div className="bg-gray-900 text-gray-100 rounded-xl p-4 shadow-md">
+    <div className="bg-[#1a1a1a] text-gray-100 rounded-xl p-4 shadow-md">
       <div className="font-semibold mb-2">Frecuencia Cardíaca</div>
       <div className="flex justify-between text-center">
         <div>

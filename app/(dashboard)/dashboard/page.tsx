@@ -186,8 +186,8 @@ export default function DashboardPage() {
           {/* Testosterona Info arriba */}
           <div className="mt-4">
             <TestosteroneInfo
-              value={healthData.heartrate ?? 0}
-              unit="BPM"
+              value={0}
+              unit="ng/dL"
               startDate={startDate}
               endDate={endDate}
               onStartDateChange={setStartDate}
@@ -210,12 +210,14 @@ export default function DashboardPage() {
           {/* Gráfico de testosterona debajo del filtro */}
           <div className="mt-4">
             {/* Placeholder para el gráfico, reemplaza con tu componente real */}
-            <div className="bg-gray-900 rounded-lg p-4 text-white text-center">
+            <div className="bg-[#1a1a1a] rounded-lg p-4 text-white text-center">
               {/* Aquí va el gráfico de testosterona */}
-              {testosteroneLevels.length > 0 ? "[Gráfico de Testosterona]" : "No hay datos para mostrar"}
+              {testosteroneLevels.length > 0
+                ? "[Gráfico de Testosterona]"
+                : "No hay datos para mostrar"}
             </div>
           </div>
-
+          <h2 className="text-2xl font-bold">Estadisticas</h2>
           {/* Métricas principales: FC promedio y calorías */}
           <div className="mt-4">
             <MainMetrics
@@ -239,16 +241,19 @@ export default function DashboardPage() {
               duration={
                 healthData.sleep_duration_total
                   ? (() => {
-                      const totalSeconds = Math.floor(healthData.sleep_duration_total / 1000);
+                      const totalSeconds = Math.floor(
+                        healthData.sleep_duration_total / 1000
+                      );
                       const hours = Math.floor(totalSeconds / 3600);
                       const minutes = Math.floor((totalSeconds % 3600) / 60);
                       return `${hours}h ${minutes}min`;
                     })()
                   : "0h 0min"
               }
+              score={healthData.sleep_score}
             />
           </div>
-      </>
+        </>
       )}
 
       {/* Modal de laboratorios */}

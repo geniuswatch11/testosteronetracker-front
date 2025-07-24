@@ -21,7 +21,7 @@ export default function TestosteroneFilter({
   const startDateValue = startDate ? new Date(startDate + "T00:00:00") : null;
   const endDateValue = endDate ? new Date(endDate + "T00:00:00") : null;
   return (
-    <div className="bg-gray-900 rounded-lg p-3 w-full">
+    <div className="bg-[#1a1a1a] rounded-lg p-3 w-full">
       <div className="text-xs mb-2 font-semibold text-white">
         Filtrar por Fecha
       </div>
@@ -35,7 +35,7 @@ export default function TestosteroneFilter({
             }
             dateFormat="yyyy-MM-dd"
             className="bg-gray-800 text-white rounded px-1 py-2 text-xs border-none outline-none"
-            placeholderText="fecha de inicio"
+            placeholderText="Fecha de inicio"
           />
         </div>
         <div className="flex flex-col">
@@ -47,7 +47,7 @@ export default function TestosteroneFilter({
             }
             dateFormat="yyyy-MM-dd"
             className="bg-gray-800 text-white rounded px-1 py-2 text-xs border-none outline-none"
-            placeholderText="fecha final"
+            placeholderText="Fecha final"
           />
         </div>
       </div>

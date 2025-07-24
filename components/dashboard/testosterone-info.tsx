@@ -29,7 +29,8 @@ export default function TestosteroneInfo({
           </div>
         </div>
         <div className="text-3xl font-bold">
-          {value} <span className="text-base font-normal">{unit}</span>
+          {value != 0 ? value : "--"}{" "}
+          <span className="text-base font-normal">{unit}</span>
         </div>
       </div>
     </div>
