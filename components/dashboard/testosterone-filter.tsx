@@ -35,7 +35,7 @@ export default function TestosteroneFilter({
             }
             dateFormat="yyyy-MM-dd"
             className="bg-gray-800 text-white rounded px-1 py-2 text-xs border-none outline-none"
-            placeholderText="Fecha de inicio"
+            placeholderText="Inicio"
           />
         </div>
         <div className="flex flex-col">
@@ -47,7 +47,7 @@ export default function TestosteroneFilter({
             }
             dateFormat="yyyy-MM-dd"
             className="bg-gray-800 text-white rounded px-1 py-2 text-xs border-none outline-none"
-            placeholderText="Fecha final"
+            placeholderText="Final"
           />
         </div>
       </div>
