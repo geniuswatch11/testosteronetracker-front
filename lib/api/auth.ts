@@ -68,14 +68,14 @@ export const authApi = {
 
       const data = response;
       console.log("Login response:", data);
-      if (!data || !data.access_token) {
+      if (!data || !data.data.access_token) {
         console.error("Login response missing access_token:", data);
         throw new Error(
           "La respuesta del servidor no contiene access_token. Verifica la estructura de la respuesta."
         );
       }
-      localStorage.setItem(AUTH_TOKEN_KEY, data.access_token);
-      Cookies.set(AUTH_TOKEN_KEY, data.access_token, { expires: 1 }); // 1 día
+      localStorage.setItem(AUTH_TOKEN_KEY, data.data.access_token);
+      Cookies.set(AUTH_TOKEN_KEY,  data.data.access_token, { expires: 1 }); // 1 día
       return data;
     } catch (error: any) {
       // Axios error
