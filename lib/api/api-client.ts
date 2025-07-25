@@ -20,25 +20,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Interceptor para manejar 401
-api.interceptors.response.use(
-  (response: AxiosResponse) => response.data,
-  (error: AxiosError) => {
-    if (error.response && error.response.status === 401) {
-      const currentLang = localStorage.getItem("locale") || "en";
-      const lang = currentLang === "es" ? "es" : "en";
-      const common = translations[lang].common;
-      const tokenExpiredMsg =
-        typeof common === "string" ? common : common.tokenExpired;
-      toast.error(typeof tokenExpiredMsg === "string" ? tokenExpiredMsg : "");
-      //authApi.logout();
-      //window.location.href = "/login";
-      return Promise.reject(new Error("Unauthorized: Token expired"));
-    }
-    return Promise.reject(error);
-  }
-);
-
 /**
  * Utilidad para hacer requests usando Axios
  * @param url endpoint relativo (sin BASE_URL)

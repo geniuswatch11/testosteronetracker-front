@@ -15,7 +15,7 @@ export function LanguageToggle({ initialLanguage }: LanguageToggleProps) {
   const { locale, setLocale, t } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
-
+  console.log("LanguageToggle mounted:", initialLanguage);
   // Establecer el idioma inicial cuando el componente se monta
   useEffect(() => {
     if (initialLanguage && !mounted && !isChanging) {

@@ -46,7 +46,9 @@ export default function SettingsClientPage() {
         }
 
         // Configurar el idioma según las preferencias del usuario
-        setLocale(profile.lenguaje);
+        const locale = profile.lenguaje || "en";
+        console.log("Setting locale to:", locale);
+        setLocale(locale);
 
         // Finalizar la inicialización
         setIsInitializing(false);

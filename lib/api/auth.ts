@@ -1,5 +1,6 @@
 import Cookies from "js-cookie";
 import { apiRequest } from "./api-client";
+import toast from "react-hot-toast";
 
 export interface LoginResponse {
   access_token: string;
@@ -98,9 +99,7 @@ export const authApi = {
     }
   },
 
-  register: async (
-    credentials: RegisterCredentials
-  ): Promise<RegisterResponse> => {
+  register: async (credentials: RegisterCredentials): Promise<any> => {
     try {
       const response = await apiRequest<any>("/register/", {
         method: "POST",
@@ -113,39 +112,17 @@ export const authApi = {
         },
       });
 
-      const data = response.data;
+      const data = response;
 
       // Guardar el email para autocompletar en el login
       localStorage.setItem(REGISTER_EMAIL_KEY, data.email);
 
       return data;
     } catch (error: any) {
-      if (error.response && error.response.data) {
-        const errorData: ErrorResponse = error.response.data;
-        // Manejar el caso cuando el usuario ya existe (status 400)
-        if (
-          error.response.status === 400 &&
-          typeof errorData.detail === "string"
-        ) {
-          throw new Error(errorData.detail);
-        }
-        // Manejar errores de validación (status 422)
-        if (error.response.status === 422 && Array.isArray(errorData.detail)) {
-          const errors = errorData.detail.map((err: any) => {
-            const field = err.loc[1];
-            return { field, message: err.msg };
-          });
-          throw { validationErrors: errors };
-        }
-        // Otros errores
-        throw new Error(
-          typeof errorData.detail === "string"
-            ? errorData.detail
-            : `Error ${error.response.status}`
-        );
+      if (error) {
+        console.error("Register error:", error);
+        toast.error("Error al registrar el usuario");
       }
-      console.error("Register error:", error);
-      throw error;
     }
   },
 
@@ -185,7 +162,7 @@ export const authApi = {
       localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(data));
       localStorage.setItem("id_profile", data.id); // Para compatibilidad con el tema
 
-      return data;
+      return data.data;
     } catch (error) {
       console.error("Error fetching user profile:", error);
       throw error;

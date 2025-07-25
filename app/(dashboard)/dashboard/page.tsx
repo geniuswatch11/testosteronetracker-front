@@ -78,9 +78,10 @@ export default function DashboardPage() {
           }
           setThemeInitialized(true);
         }
-
+        const locale = profile.lenguaje || "en";
         // Configurar el idioma según las preferencias del usuario
-        setLocale(profile.lenguaje);
+        console.log("Setting locale to:", locale);
+        setLocale(locale);
 
         // Verificar si el perfil está completo
         const isComplete = authApi.isProfileComplete(
@@ -156,20 +157,21 @@ export default function DashboardPage() {
       </main>
     );
   }
-
+  console.log(
+    "Rendering dashboard with profile:",
+    profileComplete,
+    deviceConnected
+  );
   return (
     <main className="container mx-auto max-w-md px-4 py-6 space-y-8">
-      {!profileComplete ||
-        (!deviceConnected && (
-          <div className="mt-8 mb-12">
-            <ProfileStepper
-              hasWhoop={deviceConnected}
-              hasPersonalData={profileComplete}
-            />
-          </div>
-        ))}
-
-      {profileComplete && deviceConnected && (
+      {!profileComplete || !deviceConnected ? (
+        <div className="mt-8 mb-12">
+          <ProfileStepper
+            hasWhoop={deviceConnected}
+            hasPersonalData={profileComplete}
+          />
+        </div>
+      ) : (
         <>
           <div className="text-center space-y-4">
             <h1 className="text-2xl font-bold text-center">
