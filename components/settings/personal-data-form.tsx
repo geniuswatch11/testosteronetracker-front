@@ -19,10 +19,12 @@ export type UserProfileData = {
 
 interface PersonalDataFormProps {
   userProfile: UserProfile | null;
+  setUserProfile: (profile: UserProfile) => void;
 }
 
 export default function PersonalDataForm({
   userProfile,
+  setUserProfile,
 }: PersonalDataFormProps) {
   const router = useRouter();
   const { t } = useLanguage();
@@ -68,12 +70,22 @@ export default function PersonalDataForm({
 
     try {
       // Enviar los datos al servidor
-      await profileApi.updatePersonalData({
+      const response = await profileApi.updatePersonalData({
         first_name: data.first_name,
         last_name: data.last_name,
         weight: data.weight,
         height: data.height,
         birthDate: data.birthDate,
+      });
+      console.log("Personal data updated successfully:", response);
+      setUserProfile({
+        ...(userProfile as UserProfile),
+        first_name: data.first_name,
+        last_name: data.last_name,
+        weight: data.weight,
+        height: data.height,
+        birth_date: data.birthDate,
+        profile_completion_percentage: 100, // Assuming profile is now complete
       });
 
       toast.success(t("settings.dataSaved"));

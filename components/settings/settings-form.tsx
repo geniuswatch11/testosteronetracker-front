@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 interface SettingsFormProps {
   userProfile: UserProfile | null;
   setIsLoading?: (loading: boolean) => void; // Optional prop to control loading state
+  setUserProfile: (profile: UserProfile) => void; // Optional prop to control user profile state
   setDeviceConnected?: any; // Optional prop to control connected device state
   deviceConnected?: string; // Optional prop to display connected device
 }
@@ -26,6 +27,7 @@ export default function SettingsForm({
   setIsLoading,
   deviceConnected,
   setDeviceConnected,
+  setUserProfile,
 }: SettingsFormProps) {
   const router = useRouter();
   const { t } = useLanguage();
@@ -98,7 +100,10 @@ export default function SettingsForm({
 
       <div id="personal-data" className="space-y-4">
         <h2 className="text-lg font-semibold">{t("settings.personalData")}</h2>
-        <PersonalDataForm userProfile={userProfile} />
+        <PersonalDataForm
+          userProfile={userProfile}
+          setUserProfile={setUserProfile}
+        />
       </div>
 
       <div id="whoop-connection" className="space-y-4">

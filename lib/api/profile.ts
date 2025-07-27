@@ -13,7 +13,7 @@ export interface PersonalData {
 export const profileApi = {
   updatePersonalData: async (data: PersonalData): Promise<void> => {
     try {
-      await apiRequest(`/profiles/update-profile/`, {
+      const response = await apiRequest(`/profiles/update-profile/`, {
         method: "POST",
         data: {
           birth_date: data.birthDate,
@@ -23,6 +23,7 @@ export const profileApi = {
           last_name: data.last_name,
         },
       });
+      return response.data.data;
     } catch (error) {
       console.error("Error updating personal data:", error);
       throw error;

@@ -28,6 +28,8 @@ export interface RegisterResponse {
 
 export interface UserProfile {
   id: number;
+  first_name: string;
+  last_name: string;
   email: string;
   avatar: string;
   birth_date: string | null;

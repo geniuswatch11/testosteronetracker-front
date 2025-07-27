@@ -17,7 +17,9 @@ export default function SettingsClientPage() {
   const { setTheme } = useTheme();
   const [isInitializing, setIsInitializing] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile>(
+    {} as UserProfile
+  );
   const [error, setError] = useState<string | null>(null);
   const [themeInitialized, setThemeInitialized] = useState(false);
   const [deviceConnected, setDeviceConnected] = useState("");
@@ -103,6 +105,7 @@ export default function SettingsClientPage() {
       <div className="mt-6">
         <SettingsForm
           userProfile={userProfile}
+          setUserProfile={setUserProfile}
           setIsLoading={setIsLoading}
           deviceConnected={deviceConnected}
           setDeviceConnected={setDeviceConnected}
