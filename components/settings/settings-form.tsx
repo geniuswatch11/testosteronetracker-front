@@ -12,6 +12,7 @@ import { Logo } from "../ui/logo";
 import Image from "next/image";
 import DeviceModal from "./device-modal";
 import { profileApi } from "@/lib/api/profile";
+import toast from "react-hot-toast";
 
 interface SettingsFormProps {
   userProfile: UserProfile | null;
@@ -118,7 +119,13 @@ export default function SettingsForm({
           )}
           {deviceConnected === "" && (
             <button
-              onClick={() => setIsDeviceModalOpen(true)}
+              onClick={() => {
+                if (userProfile.profile_completion_percentage === 100) {
+                  setIsDeviceModalOpen(true);
+                } else {
+                  toast.error(t("settings.errorConnection"));
+                }
+              }}
               className="flex w-full items-center justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50"
             >
               <div>

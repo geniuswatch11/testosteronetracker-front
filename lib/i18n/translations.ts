@@ -97,6 +97,7 @@ export const translations: Translations = {
     settings: {
       personalData: "Personal Data",
       connections: "Connections",
+      errorConnection: "You must complete the profile to add a device",
       theme: "Theme",
       language: "Language",
       weight: "Weight (lb)",
@@ -233,6 +234,7 @@ export const translations: Translations = {
       lastName: "Apellido",
       personalData: "Datos Personales",
       connections: "Conexiones",
+      errorConnection: "Debes completar el perfil para añadir un dispositivo",
       theme: "Tema",
       language: "Idioma",
       weight: "Peso (lb)",
