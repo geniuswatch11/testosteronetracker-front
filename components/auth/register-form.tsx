@@ -34,7 +34,6 @@ export default function RegisterForm() {
     const firstName = formData.get("firstName") as string;
     const lastName = formData.get("lastName") as string;
 
-    // Validación del lado del cliente
     if (password !== confirmPassword) {
       setErrors({ confirmPassword: t("auth.passwordMismatch") });
       setIsLoading(false);
@@ -49,34 +48,15 @@ export default function RegisterForm() {
         password,
       });
 
-      toast.success(t("auth.registerSuccess"));
-
-      // Redirigir al login con el email autocompletado
-      router.push("/login");
-    } catch (error: any) {
-      console.error("Register error:", error);
-
-      // Manejar errores de validación
-      if (error.validationErrors) {
-        const newErrors: { [key: string]: string } = {};
-        error.validationErrors.forEach((err: ValidationError) => {
-          newErrors[err.field] = err.message;
-        });
-        setErrors(newErrors);
-
-        // Mostrar el primer error en un toast
-        if (error.validationErrors.length > 0) {
-          toast.error(error.validationErrors[0].message);
-        }
-      } else if (error.message === "El usuario ya existe") {
-        // Manejar el caso cuando el usuario ya existe
-        setGeneralError(error.message);
-        setErrors({ email: error.message });
-        toast.error(error.message);
-      } else {
-        // Otros errores
+      if (!result.error) {
+        toast.success(t("auth.registerSuccess"));
+        router.push("/login");
+      }
+    } catch (err) {
+      if ((err as any)?.status === 400) {
         setGeneralError(t("auth.registerError"));
-        toast.error(t("auth.registerError"));
+      } else {
+        setGeneralError(t("auth.inesperateError"));
       }
     } finally {
       setIsLoading(false);

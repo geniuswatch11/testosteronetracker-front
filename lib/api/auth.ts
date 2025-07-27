@@ -57,73 +57,40 @@ export const USER_PROFILE_KEY = "user_profile";
 
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
-    try {
-      const response = await apiRequest<any>("/login/", {
-        method: "POST",
-        data: {
-          email: credentials.email,
-          password: credentials.password,
-        },
-      });
+    const response = await apiRequest<any>("/login/", {
+      method: "POST",
+      data: {
+        email: credentials.email,
+        password: credentials.password,
+      },
+    });
 
-      const data = response;
-      console.log("Login response:", data);
-      if (!data || !data.access_token) {
-        console.error("Login response missing access_token:", data);
-        throw new Error(
-          "La respuesta del servidor no contiene access_token. Verifica la estructura de la respuesta."
-        );
-      }
-      localStorage.setItem(AUTH_TOKEN_KEY, data.access_token);
-      Cookies.set(AUTH_TOKEN_KEY, data.access_token, { expires: 1 }); // 1 día
-      return data;
-    } catch (error: any) {
-      // Axios error
-      if (error.response && error.response.data) {
-        const errorData: ErrorResponse = error.response.data;
-        if (error.response.status === 401) {
-          throw new Error(
-            typeof errorData.detail === "string"
-              ? errorData.detail
-              : "Credenciales inválidas"
-          );
-        }
-        throw new Error(
-          typeof errorData.detail === "string"
-            ? errorData.detail
-            : `Error ${error.response.status}`
-        );
-      }
-      console.error("Login error:", error);
-      throw error;
-    }
+    const data = response;
+    console.log("Login response:", data);
+
+    localStorage.setItem(AUTH_TOKEN_KEY, data.access_token);
+    Cookies.set(AUTH_TOKEN_KEY, data.access_token, { expires: 1 }); // 1 día
+    return data;
   },
 
   register: async (credentials: RegisterCredentials): Promise<any> => {
-    try {
-      const response = await apiRequest<any>("/register/", {
-        method: "POST",
-        data: {
-          email: credentials.email,
-          first_name: credentials.firstName,
-          password: credentials.password,
-          confirmPassword: credentials.password,
-          last_name: credentials.lastName,
-        },
-      });
+    const response = await apiRequest<any>("/register/", {
+      method: "POST",
+      data: {
+        email: credentials.email,
+        first_name: credentials.firstName,
+        password: credentials.password,
+        confirmPassword: credentials.password,
+        last_name: credentials.lastName,
+      },
+    });
 
-      const data = response;
+    const data = response;
 
-      // Guardar el email para autocompletar en el login
-      localStorage.setItem(REGISTER_EMAIL_KEY, data.email);
+    // Guardar el email para autocompletar en el login
+    localStorage.setItem(REGISTER_EMAIL_KEY, data.email);
 
-      return data;
-    } catch (error: any) {
-      if (error) {
-        console.error("Register error:", error);
-        toast.error("Error al registrar el usuario");
-      }
-    }
+    return data;
   },
 
   logout: () => {

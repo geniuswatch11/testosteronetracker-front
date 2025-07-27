@@ -1,52 +1,54 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import toast from "react-hot-toast"
-import { authApi, REGISTER_EMAIL_KEY } from "@/lib/api/auth"
-import { useLanguage } from "@/lib/i18n/language-context"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import toast from "react-hot-toast";
+import { authApi, REGISTER_EMAIL_KEY } from "@/lib/api/auth";
+import { useLanguage } from "@/lib/i18n/language-context";
 
 export default function LoginForm() {
-  const router = useRouter()
-  const { t } = useLanguage()
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [email, setEmail] = useState("")
+  const router = useRouter();
+  const { t } = useLanguage();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
 
   // Verificar si hay un email guardado del registro
   useEffect(() => {
-    const registeredEmail = localStorage.getItem(REGISTER_EMAIL_KEY)
+    const registeredEmail = localStorage.getItem(REGISTER_EMAIL_KEY);
     if (registeredEmail) {
-      setEmail(registeredEmail)
+      setEmail(registeredEmail);
       // Limpiar el email guardado después de usarlo
-      localStorage.removeItem(REGISTER_EMAIL_KEY)
+      localStorage.removeItem(REGISTER_EMAIL_KEY);
     }
-  }, [])
+  }, []);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setIsLoading(true)
-    setError(null)
+    event.preventDefault();
+    setIsLoading(true);
+    setError(null);
 
-    const formData = new FormData(event.currentTarget)
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
     try {
-      await authApi.login({ email, password })
-      toast.success(t("auth.loginSuccess"))
+      await authApi.login({ email, password });
+      toast.success(t("auth.loginSuccess"));
 
       // Usar router.push para navegación del lado del cliente
-      router.push("/dashboard")
+      router.push("/dashboard");
     } catch (error) {
-      console.error("Login error:", error)
-      setError(error instanceof Error ? error.message : t("auth.loginError"))
-      toast.error(error instanceof Error ? error.message : t("auth.loginError"))
+      console.error("Login error:", error);
+      setError(error instanceof Error ? error.message : t("auth.loginError"));
+      toast.error(
+        error instanceof Error ? error.message : t("auth.loginError")
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -89,5 +91,5 @@ export default function LoginForm() {
         {t("auth.register")}
       </Link>
     </div>
-  )
+  );
 }
