@@ -87,16 +87,8 @@ export default function SettingsClientPage() {
   }, [searchParams, isLoading, error]);
 
   // Mostrar pantalla de inicialización mientras se carga el perfil y se configura la app
-  if (isInitializing) {
+  if (isInitializing || isLoading) {
     return <InitializingLoader />;
-  }
-
-  if (isLoading) {
-    return (
-      <main className="container mx-auto max-w-md px-4 py-6">
-        <SettingsSkeleton />
-      </main>
-    );
   }
 
   return (

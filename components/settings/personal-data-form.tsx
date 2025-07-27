@@ -48,8 +48,6 @@ export default function PersonalDataForm({
     .toISOString()
     .split("T")[0];
 
-  // No establecemos fecha mínima, para permitir cualquier edad mayor a 13 años
-  // Podríamos establecer una fecha mínima razonable si fuera necesario, por ejemplo 100 años atrás
   const minDate = "1900-01-01"; // Fecha mínima razonable
 
   useEffect(() => {
@@ -70,14 +68,13 @@ export default function PersonalDataForm({
 
     try {
       // Enviar los datos al servidor
-      const response = await profileApi.updatePersonalData({
+      await profileApi.updatePersonalData({
         first_name: data.first_name,
         last_name: data.last_name,
         weight: data.weight,
         height: data.height,
         birthDate: data.birthDate,
       });
-      console.log("Personal data updated successfully:", response);
       setUserProfile({
         ...(userProfile as UserProfile),
         first_name: data.first_name,
@@ -85,7 +82,7 @@ export default function PersonalDataForm({
         weight: data.weight,
         height: data.height,
         birth_date: data.birthDate,
-        profile_completion_percentage: 100, // Assuming profile is now complete
+        profile_completion_percentage: 100,
       });
 
       toast.success(t("settings.dataSaved"));
