@@ -65,7 +65,7 @@ export const authApi = {
       },
     });
 
-    const data = response;
+    const data = response.data;
     console.log("Login response:", data);
 
     localStorage.setItem(AUTH_TOKEN_KEY, data.access_token);

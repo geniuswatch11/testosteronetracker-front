@@ -36,17 +36,19 @@ export default function LoginForm() {
     const password = formData.get("password") as string;
 
     try {
-      await authApi.login({ email, password });
+      const response = await authApi.login({ email, password });
       toast.success(t("auth.loginSuccess"));
-
+      console.log("Login response:", response);
       // Usar router.push para navegación del lado del cliente
       router.push("/dashboard");
-    } catch (error) {
-      console.error("Login error:", error);
-      setError(error instanceof Error ? error.message : t("auth.loginError"));
-      toast.error(
-        error instanceof Error ? error.message : t("auth.loginError")
-      );
+    } catch (error: any) {
+      if (error?.status === 401) {
+        setError(t("auth.loginErrorCredentials"));
+        toast.error(t("auth.loginErrorCredentials"));
+      } else {
+        setError(t("auth.loginError"));
+        toast.error(t("auth.loginError"));
+      }
     } finally {
       setIsLoading(false);
     }
