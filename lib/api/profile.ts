@@ -117,7 +117,8 @@ export const profileApi = {
           const pollRes = await apiRequest(`/spike/results/${taskId}`, {
             method: "GET",
           });
-          const pollData = pollRes;
+          console.log(`Polling attempt ${attempt}:`, pollRes);
+          const pollData = pollRes.data;
           if (pollData.success) {
             integrationUrl = pollData.result?.data?.integration_url;
             if (integrationUrl) {

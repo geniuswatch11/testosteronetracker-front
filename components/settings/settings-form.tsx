@@ -13,6 +13,7 @@ import Image from "next/image";
 import DeviceModal from "./device-modal";
 import { profileApi } from "@/lib/api/profile";
 import toast from "react-hot-toast";
+import { tree } from "next/dist/build/templates/app-page";
 
 interface SettingsFormProps {
   userProfile: UserProfile | null;
@@ -46,7 +47,7 @@ export default function SettingsForm({
     profileApi
       .connectDevice(deviceName)
       .then(() => {
-        if (setIsLoading) setIsLoading(false);
+        if (setIsLoading) setIsLoading(true);
       })
       .catch(() => {
         if (setIsLoading) setIsLoading(false);
