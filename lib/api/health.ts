@@ -8,7 +8,7 @@ export const healthApi = {
       const response = await apiRequest<any>("/spike/get-stats/", {
         method: "GET",
       });
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error("Error fetching spike stats:", error);
       throw error;
@@ -25,7 +25,7 @@ export const healthApi = {
           method: "GET",
         }
       );
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error("Error fetching testosterone levels:", error);
       throw error;

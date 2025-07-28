@@ -67,7 +67,7 @@ export const profileApi = {
       });
       console.log("my-device:", response);
 
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }

@@ -32,6 +32,7 @@ export default function SettingsClientPage() {
         const myDevice = await profileApi.getMyDevice();
 
         console.log("User profile loaded:", profile);
+        console.log("User device loaded:", myDevice);
         setUserProfile(profile);
         setDeviceConnected(myDevice?.provider || "");
         // Configurar el tema según las preferencias del usuario
