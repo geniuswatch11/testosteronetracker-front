@@ -158,6 +158,12 @@ export default function DashboardPage() {
       </main>
     );
   }
+  const latestTestosteroneValue =
+    testosteroneLevels.length > 0
+      ? testosteroneLevels[testosteroneLevels.length - 1]
+          .testosterona_total_ng_dl
+      : 0;
+
   console.log(
     "Rendering dashboard with profile:",
     profileComplete,
@@ -189,7 +195,7 @@ export default function DashboardPage() {
           {/* Testosterona Info arriba */}
           <div className="mt-4">
             <TestosteroneInfo
-              value={0}
+              value={latestTestosteroneValue}
               unit="ng/dL"
               startDate={startDate}
               endDate={endDate}
