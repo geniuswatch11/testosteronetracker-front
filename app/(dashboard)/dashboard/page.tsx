@@ -22,6 +22,7 @@ import MainMetrics from "@/components/dashboard/main-metrics";
 import HeartRateDetails from "@/components/dashboard/heart-rate-details";
 import SleepSummary from "@/components/dashboard/sleep-summary";
 import TestosteroneFilter from "@/components/dashboard/testosterone-filter";
+import TestosteroneLineChart from "@/components/dashboard/testosterone-line-chart";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -214,9 +215,11 @@ export default function DashboardPage() {
             {/* Placeholder para el gráfico, reemplaza con tu componente real */}
             <div className="bg-[#1a1a1a] rounded-lg p-4 text-white text-center">
               {/* Aquí va el gráfico de testosterona */}
-              {testosteroneLevels.length > 0
-                ? "[Gráfico de Testosterona]"
-                : "No hay datos para mostrar"}
+              {testosteroneLevels.length > 0 ? (
+                <TestosteroneLineChart data={testosteroneLevels} />
+              ) : (
+                "No hay datos para mostrar"
+              )}
             </div>
           </div>
           <h2 className="text-2xl font-bold">Estadisticas</h2>
