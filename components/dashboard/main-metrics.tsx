@@ -11,7 +11,7 @@ export default function MainMetrics({ bpm, calories }: MainMetricsProps) {
     <div className="flex gap-4">
       <div className="flex-1 bg-[#1a1a1a] text-gray-100 rounded-xl p-4 flex flex-col items-center shadow-md">
         <div className="flex items-center gap-2 mb-1">
-          <Heart className="w-6 h-6 text-orange-500" />
+          <Heart className="w-8 h-8 text-orange-500 animate-pulse" />
           <span className="text-xs text-gray-400">BPM</span>
         </div>
         <div className="text-2xl font-bold">{bpm}</div>
@@ -19,7 +19,7 @@ export default function MainMetrics({ bpm, calories }: MainMetricsProps) {
       </div>
       <div className="flex-1 bg-[#1a1a1a] text-gray-100 rounded-xl p-4 flex flex-col items-center shadow-md">
         <div className="flex items-center gap-2 mb-1">
-          <Flame className="w-6 h-6 text-yellow-500" />
+          <Flame className="w-8 h-8 text-yellow-500 animate-pulse" />
           <span className="text-xs text-gray-400">kcal</span>
         </div>
         <div className="text-2xl font-bold">{calories}</div>
