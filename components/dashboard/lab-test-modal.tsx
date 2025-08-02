@@ -1,29 +1,39 @@
-"use client"
+"use client";
 
-import { X } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
-import { useLanguage } from "@/lib/i18n/language-context"
+import { X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "@/lib/i18n/language-context";
 
 interface LabOption {
-  nombre: string
-  url: string
-  icono: string
-  isText?: boolean
-  textColor?: string
-  secondaryText?: string
-  secondaryColor?: string
+  nombre: string;
+  url: string;
+  icono: string;
+  isText?: boolean;
+  textColor?: string;
+  secondaryText?: string;
+  secondaryColor?: string;
 }
 
 interface LabTestModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const labOptions: LabOption[] = [
   {
+    nombre: "Hone Health",
+    url: "https://honehealth.com/",
+    icono: "",
+    isText: true,
+    textColor: "text-blue-500",
+    secondaryText: "Health",
+    secondaryColor: "text-blue-300",
+  },
+  {
     nombre: "Any Lab Test Now",
     url: "https://www.anylabtestnow.com/",
-    icono: "https://www.anylabtestnow.com/wp-content/uploads/2023/10/ALTN-logo.svg",
+    icono:
+      "https://www.anylabtestnow.com/wp-content/uploads/2023/10/ALTN-logo.svg",
   },
   {
     nombre: "Everlywell",
@@ -40,12 +50,14 @@ const labOptions: LabOption[] = [
   {
     nombre: "Labcorp",
     url: "https://www.labcorp.com/",
-    icono: "https://www.labcorp.com/content/dam/labcorp/logos/labcorp-logos/logo.png",
+    icono:
+      "https://www.labcorp.com/content/dam/labcorp/logos/labcorp-logos/logo.png",
   },
   {
     nombre: "LetsGetChecked",
     url: "https://www.letsgetchecked.com/",
-    icono: "https://res.cloudinary.com/dvkudjdzf/image/upload/v1745510985/svg_mjr0ia.png",
+    icono:
+      "https://res.cloudinary.com/dvkudjdzf/image/upload/v1745510985/svg_mjr0ia.png",
   },
   {
     nombre: "Maximus Tribe",
@@ -57,12 +69,14 @@ const labOptions: LabOption[] = [
   {
     nombre: "myLAB Box",
     url: "https://www.mylabbox.com/",
-    icono: "https://www.mylabbox.com/wp-content/uploads/2022/10/logo-mylabbox-large-pngquant.png",
+    icono:
+      "https://www.mylabbox.com/wp-content/uploads/2022/10/logo-mylabbox-large-pngquant.png",
   },
   {
     nombre: "Quest Diagnostics",
     url: "http://questdiagnostics.com/",
-    icono: "https://s7d6.scene7.com/is/image/questdiagnostics/Quest-Diagnostics-RGB-gradient?$corp-header-logo$",
+    icono:
+      "https://s7d6.scene7.com/is/image/questdiagnostics/Quest-Diagnostics-RGB-gradient?$corp-header-logo$",
   },
   {
     nombre: "Testing",
@@ -78,77 +92,93 @@ const labOptions: LabOption[] = [
     secondaryText: "Health",
     secondaryColor: "text-blue-300",
   },
-]
+];
 
 export default function LabTestModal({ isOpen, onClose }: LabTestModalProps) {
-  const { t } = useLanguage()
-  const modalRef = useRef<HTMLDivElement>(null)
-  const [imageErrors, setImageErrors] = useState<{ [key: string]: boolean }>({})
+  const { t } = useLanguage();
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [imageErrors, setImageErrors] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
   // Close modal when clicking outside
   useEffect(() => {
     // Inicializar el estado de errores de imagen
-    const initialErrors: { [key: string]: boolean } = {}
+    const initialErrors: { [key: string]: boolean } = {};
     labOptions.forEach((lab) => {
       if (!lab.icono) {
-        initialErrors[lab.nombre] = true
+        initialErrors[lab.nombre] = true;
       }
-    })
-    setImageErrors(initialErrors)
+    });
+    setImageErrors(initialErrors);
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        onClose()
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        onClose();
       }
-    }
+    };
 
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside);
       // Prevent scrolling of the body when modal is open
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
+      document.removeEventListener("mousedown", handleClickOutside);
       // Restore scrolling when modal is closed
-      document.body.style.overflow = "auto"
-    }
-  }, [isOpen, onClose])
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen, onClose]);
 
   // Handle escape key press
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose()
+        onClose();
       }
-    }
+    };
 
     if (isOpen) {
-      document.addEventListener("keydown", handleEscKey)
+      document.addEventListener("keydown", handleEscKey);
     }
 
     return () => {
-      document.removeEventListener("keydown", handleEscKey)
-    }
-  }, [isOpen, onClose])
+      document.removeEventListener("keydown", handleEscKey);
+    };
+  }, [isOpen, onClose]);
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   const handleLabClick = (url: string) => {
-    window.open(url, "_blank")
-  }
+    window.open(url, "_blank");
+  };
 
   const handleImageError = (labName: string) => {
-    console.error(`Error loading image for ${labName}. URL: ${labOptions.find((lab) => lab.nombre === labName)?.icono}`)
-    setImageErrors((prev) => ({ ...prev, [labName]: true }))
-  }
+    console.error(
+      `Error loading image for ${labName}. URL: ${
+        labOptions.find((lab) => lab.nombre === labName)?.icono
+      }`
+    );
+    setImageErrors((prev) => ({ ...prev, [labName]: true }));
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div ref={modalRef} className="relative w-full max-w-md max-h-[80vh] bg-background rounded-lg shadow-lg mx-4">
+      <div
+        ref={modalRef}
+        className="relative w-full max-w-md max-h-[80vh] bg-background rounded-lg shadow-lg mx-4"
+      >
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="text-xl font-semibold">{t("dashboard.selectLab")}</h2>
-          <button onClick={onClose} className="p-1 rounded-full hover:bg-muted transition-colors" aria-label="Close">
+          <button
+            onClick={onClose}
+            className="p-1 rounded-full hover:bg-muted transition-colors"
+            aria-label="Close"
+          >
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -164,9 +194,16 @@ export default function LabTestModal({ isOpen, onClose }: LabTestModalProps) {
                 <div className="h-16 flex items-center justify-center mb-2">
                   {lab.isText || imageErrors[lab.nombre] ? (
                     <div className="text-center">
-                      <span className={`text-lg ${lab.textColor || "text-primary"}`}>{lab.nombre}</span>
+                      <span
+                        className={`text-lg ${lab.textColor || "text-primary"}`}
+                      >
+                        {lab.nombre}
+                      </span>
                       {lab.secondaryText && (
-                        <span className={`text-lg ${lab.secondaryColor || ""}`}> {lab.secondaryText}</span>
+                        <span className={`text-lg ${lab.secondaryColor || ""}`}>
+                          {" "}
+                          {lab.secondaryText}
+                        </span>
                       )}
                     </div>
                   ) : (
@@ -182,12 +219,14 @@ export default function LabTestModal({ isOpen, onClose }: LabTestModalProps) {
                     </div>
                   )}
                 </div>
-                <span className="text-xs text-center mt-2 line-clamp-2">{lab.nombre}</span>
+                <span className="text-xs text-center mt-2 line-clamp-2">
+                  {lab.nombre}
+                </span>
               </button>
             ))}
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
