@@ -46,8 +46,8 @@ export default function SettingsForm({
     setConnectedDevice(deviceName);
     profileApi
       .connectDevice(deviceName)
-      .then(() => {
-        if (setIsLoading) setIsLoading(true);
+      .then((response) => {
+        if (setIsLoading) setIsLoading(false);
       })
       .catch(() => {
         if (setIsLoading) setIsLoading(false);

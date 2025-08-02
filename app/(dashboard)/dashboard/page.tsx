@@ -228,6 +228,11 @@ export default function DashboardPage() {
               )}
             </div>
           </div>
+          <TestosteroneTable
+            birthDate={userProfile?.birth_date || null}
+            testosteroneValue={latestTestosteroneValue || null}
+            isLoading={isDataLoading}
+          />
           <h2 className="text-2xl font-bold">Estadisticas</h2>
           {/* Métricas principales: FC promedio y calorías */}
           <div className="mt-4">
