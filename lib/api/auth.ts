@@ -87,10 +87,11 @@ export const authApi = {
       },
     });
 
-    const data = response;
+    const data = response.data;
+    console.log("Register response:", data);
 
     // Guardar el email para autocompletar en el login
-    localStorage.setItem(REGISTER_EMAIL_KEY, data.email);
+    localStorage.setItem(REGISTER_EMAIL_KEY, credentials.email);
 
     return data;
   },
