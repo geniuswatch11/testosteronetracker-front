@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "@/lib/i18n/language-context";
+import { useRouter } from "next/navigation";
 import { CheckCircle, XCircle, User, Smartphone } from "lucide-react";
 
 interface ProfileStepperProps {
@@ -13,6 +14,7 @@ export default function ProfileStepper({
   hasPersonalData,
 }: ProfileStepperProps) {
   const { t } = useLanguage();
+  const router = useRouter();
 
   return (
     <div className="w-full max-w-xs mx-auto bg-[#181A20] rounded-2xl p-6 shadow-lg flex flex-col items-center">
@@ -34,7 +36,8 @@ export default function ProfileStepper({
             hasWhoop
               ? "bg-green-900/20 border-green-800"
               : "bg-[#23262F] border-[#23262F]"
-          } border`}
+          } border cursor-pointer`}
+          onClick={() => router.push("/settings")}
         >
           <div className="flex items-center space-x-3">
             <Smartphone
@@ -65,7 +68,8 @@ export default function ProfileStepper({
             hasPersonalData
               ? "bg-green-900/20 border-green-800"
               : "bg-[#23262F] border-[#23262F]"
-          } border`}
+          } border cursor-pointer`}
+          onClick={() => router.push("/settings")}
         >
           <div className="flex items-center space-x-3">
             <User
