@@ -132,9 +132,6 @@ export default function PersonalDataForm({
           <input
             id="weight"
             type="number"
-            min="66"
-            max="660"
-            step="0.1"
             required
             value={data.weight || ""}
             onChange={(e) =>
@@ -151,9 +148,6 @@ export default function PersonalDataForm({
           <input
             id="height"
             type="number"
-            min="3"
-            max="8"
-            step="0.1"
             required
             value={data.height || ""}
             onChange={(e) =>
