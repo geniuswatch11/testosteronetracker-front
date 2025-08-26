@@ -79,9 +79,6 @@ export default function DatePicker({
             mode="single"
             selected={selectedDate}
             onSelect={handleDateSelect}
-            disabled={(date) =>
-              (minDate && date < minDate) || (maxDate && date > maxDate)
-            }
             initialFocus
           />
         </PopoverContent>
@@ -99,3 +96,6 @@ export default function DatePicker({
         aria-hidden="true"
         tabIndex={-1}
       />
+    </div>
+  );
+}
