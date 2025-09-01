@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
@@ -40,17 +40,22 @@ export default function DatePicker({
 
   // Convierte las fechas de string a objetos Date, especificando UTC para evitar problemas de zona horaria.
 
-  const [selectedDate, setSelected] = useState<Date | undefined>(
-    new Date(`${value}T00:00:00`)
-  );
+  const [selectedDate, setSelected] = useState<Date | undefined>();
 
-  const handleDateSelect = (date: Date | undefined) => {
-    if (date) {
-      // Formatea la fecha de vuelta a "yyyy-MM-dd" para el componente padre.
-      onChange(format(date, "yyyy-MM-dd"));
+  // Sincroniza el estado local con la prop 'value' para evitar el error.
+  useEffect(() => {
+    if (value) {
+      setSelected(new Date(`${value}T00:00:00`));
+    } else {
+      setSelected(undefined);
     }
-    setIsOpen(false); // Cierra el popover al seleccionar una fecha.
-  };
+  }, [value]);
+
+  useEffect(() => {
+    if (selectedDate) {
+      setIsOpen(false);
+    }
+  }, [selectedDate]);
 
   return (
     <div className="space-y-1">
