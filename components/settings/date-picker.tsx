@@ -39,9 +39,10 @@ export default function DatePicker({
   const [isOpen, setIsOpen] = useState(false);
 
   // Convierte las fechas de string a objetos Date, especificando UTC para evitar problemas de zona horaria.
-  const selectedDate = value ? new Date(`${value}T00:00:00`) : undefined;
-  const minDate = min ? new Date(`${min}T00:00:00`) : undefined;
-  const maxDate = max ? new Date(`${max}T00:00:00`) : undefined;
+
+  const [selectedDate, setSelected] = useState<Date | undefined>(
+    new Date(`${value}T00:00:00`)
+  );
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
@@ -78,8 +79,7 @@ export default function DatePicker({
           <Calendar
             mode="single"
             selected={selectedDate}
-            onSelect={handleDateSelect}
-            initialFocus
+            setSelected={setSelected}
           />
         </PopoverContent>
       </Popover>
