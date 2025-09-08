@@ -57,6 +57,11 @@ export default function DatePicker({
     }
   }, [selectedDate]);
 
+  const handleDateSelect = (date: Date | undefined) => {
+    console.log("date", date);
+    onChange(format(date!, "yyyy-MM-dd"));
+  };
+
   return (
     <div className="space-y-1">
       <label htmlFor={id} className="block text-sm font-medium mb-1">
@@ -84,7 +89,7 @@ export default function DatePicker({
           <Calendar
             mode="single"
             selected={selectedDate}
-            setSelected={setSelected}
+            setSelected={handleDateSelect}
           />
         </PopoverContent>
       </Popover>
