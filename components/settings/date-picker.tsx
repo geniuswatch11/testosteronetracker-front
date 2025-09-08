@@ -58,7 +58,6 @@ export default function DatePicker({
   }, [selectedDate]);
 
   const handleDateSelect = (date: Date | undefined) => {
-    console.log("date", date);
     onChange(format(date!, "yyyy-MM-dd"));
   };
 

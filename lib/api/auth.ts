@@ -1,6 +1,5 @@
 import Cookies from "js-cookie";
 import { apiRequest } from "./api-client";
-import toast from "react-hot-toast";
 
 export interface LoginResponse {
   access_token: string;
@@ -55,7 +54,7 @@ export interface ValidationError {
 
 export const AUTH_TOKEN_KEY = "access_token";
 export const REGISTER_EMAIL_KEY = "register_email";
-export const USER_PROFILE_KEY = "user_profile";
+export const USER_PROFILE_KEY = "id_profile";
 
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
@@ -68,9 +67,11 @@ export const authApi = {
     });
 
     const data = response.data;
-    console.log("Login response:", data);
+    console.log("Login response____________________:", data);
+    console.log("Storing user profile in localStorage:", data.user.profile);
 
     localStorage.setItem(AUTH_TOKEN_KEY, data.access_token);
+    localStorage.setItem(USER_PROFILE_KEY, data.user.profile);
     Cookies.set(AUTH_TOKEN_KEY, data.access_token, { expires: 1 }); // 1 día
     return data;
   },
@@ -127,11 +128,6 @@ export const authApi = {
       });
       console.log("User profile response:", response);
       const data = response.data;
-
-      // Guardar el perfil en localStorage para acceso rápido
-      localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(data));
-      localStorage.setItem("id_profile", data.id); // Para compatibilidad con el tema
-
       return data.data;
     } catch (error) {
       console.error("Error fetching user profile:", error);

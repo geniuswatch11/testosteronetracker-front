@@ -1,4 +1,3 @@
-import { authApi, USER_PROFILE_KEY, UserProfile } from "./auth";
 import { apiRequest } from "./api-client";
 import toast from "react-hot-toast";
 
