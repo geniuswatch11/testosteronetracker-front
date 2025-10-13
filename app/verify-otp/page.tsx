@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import VerifyOtpForm from "@/components/auth/verify-otp-form"
 import Image from "next/image"
 
-export default function VerifyOtpPage() {
+function VerifyOtpContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState<string | null>(null)
@@ -55,5 +55,17 @@ export default function VerifyOtpPage() {
         <VerifyOtpForm email={email} context={context} />
       </div>
     </main>
+  )
+}
+
+export default function VerifyOtpPage() {
+  return (
+    <Suspense fallback={
+      <main className="flex min-h-screen flex-col items-center justify-center bg-black p-4">
+        <div className="text-white">Loading...</div>
+      </main>
+    }>
+      <VerifyOtpContent />
+    </Suspense>
   )
 }

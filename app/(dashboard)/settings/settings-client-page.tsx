@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import SettingsForm from "@/components/settings/settings-form"
 import { SettingsSkeleton } from "@/components/settings/settings-skeleton"
 import { useSearchParams } from "next/navigation"
@@ -10,7 +10,7 @@ import { InitializingLoader } from "@/components/dashboard/initializing-loader"
 import { ConnectionError } from "@/components/dashboard/connection-error"
 import { useTheme } from "next-themes"
 
-export default function SettingsClientPage() {
+function SettingsContent() {
   const searchParams = useSearchParams()
   const { t, setLocale } = useLanguage()
   const { setTheme } = useTheme()
@@ -107,5 +107,13 @@ export default function SettingsClientPage() {
         <SettingsForm userProfile={userProfile} />
       </div>
     </main>
+  )
+}
+
+export default function SettingsClientPage() {
+  return (
+    <Suspense fallback={<InitializingLoader />}>
+      <SettingsContent />
+    </Suspense>
   )
 }
