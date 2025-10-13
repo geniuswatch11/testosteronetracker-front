@@ -29,7 +29,7 @@ export function ComingSoon({
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black p-4">
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
         {/* Card con el contenido */}
         <div className="rounded-3xl bg-neutral-600 p-12 text-center space-y-6">

@@ -54,6 +54,7 @@ export interface LoginUser {
   id: string
   profile_id: string
   username: string
+  spike_connect: boolean
 }
 
 export interface LoginResponseData {

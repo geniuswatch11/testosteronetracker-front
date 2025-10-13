@@ -52,6 +52,7 @@ export interface UserProfile {
   theme: "white" | "dark" | "system"
   lenguaje: "en" | "es"
   has_client_id: boolean
+  is_complete: boolean
 }
 
 export interface ErrorResponse {
@@ -69,6 +70,8 @@ export interface ValidationError {
 export const AUTH_TOKEN_KEY = "access_token"
 export const REGISTER_EMAIL_KEY = "register_email"
 export const USER_PROFILE_KEY = "user_profile"
+export const SPIKE_CONNECT_KEY = "spike_connect"
+export const IS_COMPLETE_KEY = "is_complete"
 
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
@@ -111,6 +114,16 @@ export const authApi = {
       if (data.user) {
         localStorage.setItem("user_id", data.user.id)
         localStorage.setItem("profile_id", data.user.profile_id)
+        
+        // Guardar spike_connect en localStorage y cookies
+        const spikeConnect = data.user.spike_connect ? "true" : "false"
+        localStorage.setItem(SPIKE_CONNECT_KEY, spikeConnect)
+        Cookies.set(SPIKE_CONNECT_KEY, spikeConnect, { expires: 1 }) // 1 día
+        
+        // Guardar is_complete en localStorage y cookies
+        const isComplete = data.user.is_complete ? "true" : "false"
+        localStorage.setItem(IS_COMPLETE_KEY, isComplete)
+        Cookies.set(IS_COMPLETE_KEY, isComplete, { expires: 1 }) // 1 día
       }
 
       return {
@@ -180,9 +193,13 @@ export const authApi = {
     // Eliminar el token de localStorage
     localStorage.removeItem(AUTH_TOKEN_KEY)
     localStorage.removeItem(USER_PROFILE_KEY)
+    localStorage.removeItem(SPIKE_CONNECT_KEY)
+    localStorage.removeItem(IS_COMPLETE_KEY)
 
     // También eliminar de cookies
     Cookies.remove(AUTH_TOKEN_KEY)
+    Cookies.remove(SPIKE_CONNECT_KEY)
+    Cookies.remove(IS_COMPLETE_KEY)
   },
 
   isAuthenticated: (): boolean => {
@@ -192,6 +209,16 @@ export const authApi = {
 
   getToken: (): string | null => {
     return localStorage.getItem(AUTH_TOKEN_KEY) || Cookies.get(AUTH_TOKEN_KEY) || null
+  },
+
+  getSpikeConnect: (): boolean => {
+    const spikeConnect = localStorage.getItem(SPIKE_CONNECT_KEY) || Cookies.get(SPIKE_CONNECT_KEY)
+    return spikeConnect === "true"
+  },
+
+  getIsComplete: (): boolean => {
+    const isComplete = localStorage.getItem(IS_COMPLETE_KEY) || Cookies.get(IS_COMPLETE_KEY)
+    return isComplete === "true"
   },
 
   getUserProfile: async (): Promise<UserProfile> => {
@@ -220,7 +247,6 @@ export const authApi = {
       return data
     } catch (error) {
       console.error("Error fetching user profile:", error)
-      throw error
     }
   },
 

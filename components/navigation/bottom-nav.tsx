@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { BarChart2, Bell, Settings } from "lucide-react"
+import { LayoutDashboard, BarChart2, ShoppingBag, Settings } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 
 export default function BottomNav() {
@@ -13,12 +13,17 @@ export default function BottomNav() {
     {
       name: t("dashboard.overview"),
       href: "/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      name: t("dashboard.stats"),
+      href: "/stats",
       icon: BarChart2,
     },
     {
-      name: t("dashboard.notifications"),
-      href: "/notifications",
-      icon: Bell,
+      name: t("dashboard.store"),
+      href: "/store",
+      icon: ShoppingBag,
     },
     {
       name: t("dashboard.settings"),
@@ -28,7 +33,7 @@ export default function BottomNav() {
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 border-t bg-background">
+    <nav className="fixed bottom-0 left-0 right-0 border-t bg-neutral-600">
       <div className="mx-auto flex h-16 max-w-md items-center justify-around px-4">
         {navigation.map((item) => {
           const isActive = pathname === item.href
@@ -36,8 +41,8 @@ export default function BottomNav() {
             <Link
               key={item.name}
               href={item.href}
-              className={`flex flex-col items-center justify-center space-y-1 ${
-                isActive ? "text-blue-500" : "text-muted-foreground hover:text-blue-500"
+              className={`flex flex-col items-center justify-center space-y-1 transition-colors ${
+                isActive ? "text-primary-600" : "text-neutral-400 hover:text-neutral-300"
               }`}
             >
               <item.icon className="h-6 w-6" />

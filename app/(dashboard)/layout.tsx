@@ -11,7 +11,7 @@ export default function DashboardLayout({
   return (
     <AuthGuard>
       <ThemeInitializer />
-      <div className="min-h-screen pb-16">
+      <div className="min-h-screen bg-black pb-16">
         {children}
         <BottomNav />
       </div>
