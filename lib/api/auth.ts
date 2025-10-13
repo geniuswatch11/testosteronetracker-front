@@ -1,5 +1,6 @@
 import Cookies from "js-cookie"
 import { apiRequest } from "./api-client"
+import type { ApiResponse, ApiErrorResponse, LoginResponseData, LoginRequestData } from "@/lib/types/api"
 
 export interface LoginResponse {
   access_token: string
@@ -54,7 +55,7 @@ export const USER_PROFILE_KEY = "user_profile"
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
     try {
-      const response = await apiRequest("https://api.geniushpro.com/login", {
+      const response = await fetch("http://localhost:3001/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,26 +66,43 @@ export const authApi = {
         }),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        if (response.status === 401) {
-          const errorData: ErrorResponse = await response.json()
-          throw new Error(typeof errorData.detail === "string" ? errorData.detail : "Credenciales inválidas")
+        // Manejar error simple: {"error": "Invalid credentials"}
+        if (data.error) {
+          throw new Error(data.error)
         }
-        throw new Error(`Error ${response.status}: ${response.statusText}`)
+        
+        throw new Error("Error al iniciar sesión")
       }
 
-      const data: LoginResponse = await response.json()
 
-      // Guardar el token en localStorage
+      // La respuesta exitosa tiene: success, access_token, refresh_token, user
+      if (!data.success || !data.access_token) {
+        throw new Error("Respuesta inválida del servidor")
+      }
+
+      // Guardar el access_token en localStorage
       localStorage.setItem(AUTH_TOKEN_KEY, data.access_token)
 
       // También guardar en cookie para que el middleware pueda detectarlo
       Cookies.set(AUTH_TOKEN_KEY, data.access_token, { expires: 1 }) // 1 día
 
-      return data
+      // Guardar información del usuario si es necesario
+      if (data.user) {
+        localStorage.setItem("user_id", data.user.id)
+        localStorage.setItem("profile_id", data.user.profile_id)
+      }
+
+      return {
+        access_token: data.access_token,
+        token_type: "Bearer",
+        expires_in: 86400, // 1 día en segundos
+      }
     } catch (error) {
       console.error("Login error:", error)
-      throw error
+      // throw error
     }
   },
 
