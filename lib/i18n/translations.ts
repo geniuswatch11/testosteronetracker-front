@@ -134,6 +134,10 @@ export const translations: Translations = {
       profileLoadError: "We couldn't load your profile. Please try again later.",
       retry: "Try Again",
     },
+    loading: {
+      synchronizing: "Synchronizing the data",
+      preparingData: "We are preparing all the data with your next recent statistics",
+    },
   },
   es: {
     common: {
@@ -259,6 +263,10 @@ export const translations: Translations = {
       connectionMessage: "No hemos podido cargar tus datos de salud. Por favor, inténtalo más tarde.",
       profileLoadError: "No hemos podido cargar tu perfil. Por favor, inténtalo más tarde.",
       retry: "Intentar de nuevo",
+    },
+    loading: {
+      synchronizing: "Sincronizando los datos",
+      preparingData: "Estamos preparando todos los datos con tus próximas estadísticas recientes",
     },
   },
 }
