@@ -1,4 +1,5 @@
 import Cookies from "js-cookie"
+import toast from "react-hot-toast"
 import { apiRequest } from "./api-client"
 import type { 
   ApiResponse, 
@@ -8,7 +9,13 @@ import type {
   ResendOtpRequestData,
   ResendOtpResponseData,
   VerifyAccountRequestData,
-  VerifyAccountResponseData
+  VerifyAccountResponseData,
+  PasswordResetRequestData,
+  PasswordResetResponseData,
+  PasswordResetValidateOtpData,
+  PasswordResetValidateOtpResponseData,
+  PasswordResetConfirmData,
+  PasswordResetConfirmResponseData
 } from "@/lib/types/api"
 
 export interface LoginResponse {
@@ -368,6 +375,93 @@ export const authApi = {
       return responseData
     } catch (error) {
       console.error("Verify account error:", error)
+      throw error
+    }
+  },
+
+  passwordResetRequest: async (data: PasswordResetRequestData): Promise<PasswordResetResponseData> => {
+    try {
+      const response = await fetch("http://localhost:8000/v1/api/password-reset/request/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+
+      const responseData = await response.json()
+
+      if (!response.ok) {
+        // Manejar error con estructura: {message, error, data}
+        if (responseData.error && responseData.message) {
+          throw new Error(responseData.message)
+        }
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
+      }
+
+      return responseData
+    } catch (error) {
+      console.error("Password reset request error:", error)
+      const errorMessage = error instanceof Error ? error.message : "Error sending password reset code"
+      toast.error(errorMessage)
+      throw error
+    }
+  },
+
+  passwordResetValidateOtp: async (data: PasswordResetValidateOtpData): Promise<PasswordResetValidateOtpResponseData> => {
+    try {
+      const response = await fetch("http://localhost:8000/v1/api/password-reset/validate-otp/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+
+      const responseData = await response.json()
+
+      if (!response.ok) {
+        // Manejar error con estructura: {message, error, data}
+        if (responseData.error && responseData.message) {
+          throw new Error(responseData.message)
+        }
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
+      }
+
+      return responseData
+    } catch (error) {
+      console.error("Password reset validate OTP error:", error)
+      const errorMessage = error instanceof Error ? error.message : "Invalid verification code"
+      toast.error(errorMessage)
+      throw error
+    }
+  },
+
+  passwordResetConfirm: async (data: PasswordResetConfirmData): Promise<PasswordResetConfirmResponseData> => {
+    try {
+      const response = await fetch("http://localhost:8000/v1/api/password-reset/confirm/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+
+      const responseData = await response.json()
+
+      if (!response.ok) {
+        // Manejar error con estructura: {message, error, data}
+        if (responseData.error && responseData.message) {
+          throw new Error(responseData.message)
+        }
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
+      }
+
+      return responseData
+    } catch (error) {
+      console.error("Password reset confirm error:", error)
+      const errorMessage = error instanceof Error ? error.message : "Error changing password"
+      toast.error(errorMessage)
       throw error
     }
   },

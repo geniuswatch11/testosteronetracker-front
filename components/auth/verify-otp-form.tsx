@@ -11,9 +11,10 @@ import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/comp
 
 interface VerifyOtpFormProps {
   email: string
+  context?: "verify" | "reset_password"
 }
 
-export default function VerifyOtpForm({ email }: VerifyOtpFormProps) {
+export default function VerifyOtpForm({ email, context = "verify" }: VerifyOtpFormProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [isResending, setIsResending] = useState(false)
@@ -39,13 +40,26 @@ export default function VerifyOtpForm({ email }: VerifyOtpFormProps) {
     setGeneralError(null)
 
     try {
-      await authApi.verifyAccount({
-        email,
-        code: otpCode,
-      })
+      if (context === "reset_password") {
+        // Validar OTP para reset de contraseña
+        await authApi.passwordResetValidateOtp({
+          email,
+          code: otpCode,
+        })
 
-      toast.success("Account verified successfully!")
-      setShowSuccess(true)
+        toast.success("Code verified successfully!")
+        // Redirigir a la página de reset-password con email y código
+        router.push(`/reset-password?email=${encodeURIComponent(email)}&code=${otpCode}`)
+      } else {
+        // Verificar cuenta (flujo de registro)
+        await authApi.verifyAccount({
+          email,
+          code: otpCode,
+        })
+
+        toast.success("Account verified successfully!")
+        setShowSuccess(true)
+      }
     } catch (error: any) {
       console.error("Verify OTP error:", error)
       
@@ -76,7 +90,7 @@ export default function VerifyOtpForm({ email }: VerifyOtpFormProps) {
     try {
       await authApi.resendOtp({
         email,
-        context: "verify",
+        context,
       })
 
       toast.success("Verification code sent successfully!")

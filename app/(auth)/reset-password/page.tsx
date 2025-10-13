@@ -2,35 +2,31 @@
 
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import VerifyOtpForm from "@/components/auth/verify-otp-form"
+import ResetPasswordForm from "@/components/auth/reset-password-form"
 import Image from "next/image"
 
-export default function VerifyOtpPage() {
+export default function ResetPasswordPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState<string | null>(null)
-  const [context, setContext] = useState<"verify" | "reset_password">("verify")
+  const [code, setCode] = useState<string | null>(null)
 
   useEffect(() => {
     const emailParam = searchParams.get("email")
-    const contextParam = searchParams.get("context")
+    const codeParam = searchParams.get("code")
     
-    if (!emailParam) {
-      // Si no hay email en los parámetros, redirigir al registro
-      router.push("/register")
+    if (!emailParam || !codeParam) {
+      // Si no hay email o código, redirigir al login
+      router.push("/login")
       return
     }
     
     setEmail(emailParam)
-    
-    // Establecer el contexto si está presente
-    if (contextParam === "reset_password") {
-      setContext("reset_password")
-    }
+    setCode(codeParam)
   }, [searchParams, router])
 
-  // Mostrar loading mientras se verifica el email
-  if (!email) {
+  // Mostrar loading mientras se verifican los parámetros
+  if (!email || !code) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center bg-black p-4">
         <div className="text-white">Loading...</div>
@@ -52,7 +48,7 @@ export default function VerifyOtpPage() {
           />
         </div>
         
-        <VerifyOtpForm email={email} context={context} />
+        <ResetPasswordForm email={email} code={code} />
       </div>
     </main>
   )

@@ -92,3 +92,40 @@ export interface VerifyAccountResponseData {
   access_token?: string
   refresh_token?: string
 }
+
+/**
+ * Tipos específicos para el endpoint de Password Reset Request
+ */
+export interface PasswordResetRequestData {
+  email: string
+}
+
+export interface PasswordResetResponseData {
+  message: string
+}
+
+/**
+ * Tipos específicos para el endpoint de Password Reset Validate OTP
+ */
+export interface PasswordResetValidateOtpData {
+  email: string
+  code: string
+}
+
+export interface PasswordResetValidateOtpResponseData {
+  message: string
+}
+
+/**
+ * Tipos específicos para el endpoint de Password Reset Confirm
+ */
+export interface PasswordResetConfirmData {
+  email: string
+  code: string
+  password: string
+  confirmPassword: string
+}
+
+export interface PasswordResetConfirmResponseData {
+  message: string
+}
