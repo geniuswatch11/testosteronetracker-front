@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { PartnerCard } from "@/components/store/partner-card"
-import { Heart, Activity, FlaskConical, Brain, Bell } from "lucide-react"
+import { Heart, Activity, FlaskConical, Brain, Bell, Bed } from "lucide-react"
 import { authApi } from "@/lib/api/auth"
 import Image from "next/image"
 
@@ -39,7 +39,6 @@ export default function StorePage() {
       icon: Heart,
       title: t("store.vitamins.title"),
       description: t("store.vitamins.description"),
-      iconBgColor: "bg-primary-cyan-600",
       externalUrl: "https://www.google.com",
     },
     {
@@ -47,7 +46,6 @@ export default function StorePage() {
       icon: Activity,
       title: t("store.whoop.title"),
       description: t("store.whoop.description"),
-      iconBgColor: "bg-neutral-600",
       externalUrl: "https://www.google.com",
     },
     {
@@ -55,15 +53,13 @@ export default function StorePage() {
       icon: FlaskConical,
       title: t("store.labsSorio.title"),
       description: t("store.labsSorio.description"),
-      iconBgColor: "bg-neutral-600",
       externalUrl: "https://www.google.com",
     },
     {
       id: "muse",
-      icon: Brain,
+      icon: Bed,
       title: t("store.muse.title"),
       description: t("store.muse.description"),
-      iconBgColor: "bg-neutral-600",
       externalUrl: "https://www.google.com",
     },
   ]
@@ -123,7 +119,6 @@ export default function StorePage() {
                 icon={partner.icon}
                 title={partner.title}
                 description={partner.description}
-                iconBgColor={partner.iconBgColor}
               />
             ))}
           </div>

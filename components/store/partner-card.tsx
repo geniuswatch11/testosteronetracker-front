@@ -8,40 +8,25 @@ interface PartnerCardProps {
   icon: LucideIcon
   title: string
   description: string
-  iconBgColor: string
 }
 
-export function PartnerCard({ id, icon: Icon, title, description, iconBgColor }: PartnerCardProps) {
+export function PartnerCard({ id, icon: Icon, title, description }: PartnerCardProps) {
   return (
-    <div className="relative">
-      <Link href={`/store/${id}`}>
-        <div className="bg-neutral-600 rounded-2xl p-6 hover:bg-neutral-500 transition-all cursor-pointer shadow-lg shadow-black/30">
-          <div className="flex gap-4">
-            <div className={`${iconBgColor} rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0`}>
-              <Icon className="w-6 h-6 text-white" />
-            </div>
-            <div className="flex-1 space-y-2">
-              <h3 className="text-white font-semibold text-lg">{title}</h3>
-              <p className="text-neutral-400 text-sm leading-relaxed">{description}</p>
-            </div>
-          </div>
-        </div>
-      </Link>
-      
-      {/* Reflection Effect */}
-      <div className="absolute top-full left-0 right-0 h-16 overflow-hidden pointer-events-none">
-        <div className="bg-neutral-600 rounded-2xl p-6 opacity-10 -translate-y-full scale-y-[-1] blur-[1px]">
-          <div className="flex gap-4">
-            <div className={`${iconBgColor} rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0`}>
-              <Icon className="w-6 h-6 text-white" />
-            </div>
-            <div className="flex-1 space-y-2">
-              <h3 className="text-white font-semibold text-lg">{title}</h3>
-              <p className="text-neutral-400 text-sm leading-relaxed">{description}</p>
-            </div>
+    <Link href={`/store/${id}`} className="block group">
+      <div 
+        className="relative bg-[#1C1C1E] border border-neutral-800 rounded-2xl p-6 transition-all cursor-pointer overflow-hidden h-full"
+      >
+        {/* Glow Effect */}
+        <div className="absolute -top-1/2 -right-1/4 w-1/2 h-full bg-primary-cyan-500/10 rounded-full blur-3xl group-hover:bg-primary-cyan-500/20 transition-all duration-500" />
+
+        <div className="relative flex gap-6 items-start">
+          <Icon className="w-8 h-8 text-white flex-shrink-0 mt-1" />
+          <div className="flex-1 space-y-1">
+            <h3 className="text-white font-bold text-lg">{title}</h3>
+            <p className="text-neutral-300 text-sm leading-relaxed">{description}</p>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
