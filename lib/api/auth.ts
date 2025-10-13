@@ -1,6 +1,15 @@
 import Cookies from "js-cookie"
 import { apiRequest } from "./api-client"
-import type { ApiResponse, ApiErrorResponse, LoginResponseData, LoginRequestData } from "@/lib/types/api"
+import type { 
+  ApiResponse, 
+  ApiErrorResponse, 
+  LoginResponseData, 
+  LoginRequestData,
+  ResendOtpRequestData,
+  ResendOtpResponseData,
+  VerifyAccountRequestData,
+  VerifyAccountResponseData
+} from "@/lib/types/api"
 
 export interface LoginResponse {
   access_token: string
@@ -15,13 +24,15 @@ export interface LoginCredentials {
 
 export interface RegisterCredentials {
   email: string
-  name: string
+  username: string
   password: string
+  confirmPassword: string
+  terms_and_conditions_accepted: boolean
 }
 
 export interface RegisterResponse {
   email: string
-  name: string
+  username: string
 }
 
 export interface UserProfile {
@@ -102,35 +113,43 @@ export const authApi = {
       }
     } catch (error) {
       console.error("Login error:", error)
-      // throw error
+      throw error
     }
   },
 
   register: async (credentials: RegisterCredentials): Promise<RegisterResponse> => {
     try {
-      const response = await fetch("https://api.geniushpro.com/register", {
+      const response = await fetch("http://localhost:8000/v1/api/register/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: credentials.email,
-          name: credentials.name,
+          username: credentials.username,
           password: credentials.password,
+          confirmPassword: credentials.confirmPassword,
+          terms_and_conditions_accepted: credentials.terms_and_conditions_accepted,
         }),
       })
 
-      if (!response.ok) {
-        const errorData: ErrorResponse = await response.json()
+      const responseData = await response.json()
 
-        // Manejar el caso cuando el usuario ya existe (status 400)
-        if (response.status === 400 && typeof errorData.detail === "string") {
-          throw new Error(errorData.detail)
+      if (!response.ok) {
+        // Manejar error con estructura: {message, error, data}
+        if (responseData.error && responseData.message) {
+          // Si es error de email duplicado, lanzar con información específica
+          if (responseData.error === "email_already_exists") {
+            throw new Error(responseData.message)
+          }
+          
+          // Otros errores con la misma estructura
+          throw new Error(responseData.message)
         }
 
-        // Manejar errores de validación (status 422)
-        if (response.status === 422 && Array.isArray(errorData.detail)) {
-          const errors = errorData.detail.map((err) => {
+        // Manejar errores de validación (status 422) con estructura antigua
+        if (response.status === 422 && Array.isArray(responseData.detail)) {
+          const errors = responseData.detail.map((err: ValidationError) => {
             const field = err.loc[1] // Obtener el nombre del campo (email, password, etc.)
             return { field, message: err.msg }
           })
@@ -141,15 +160,12 @@ export const authApi = {
         throw new Error(`Error ${response.status}: ${response.statusText}`)
       }
 
-      const data: RegisterResponse = await response.json()
-
       // Guardar el email para autocompletar en el login
-      localStorage.setItem(REGISTER_EMAIL_KEY, data.email)
+      localStorage.setItem(REGISTER_EMAIL_KEY, responseData.email)
 
-      return data
+      return responseData
     } catch (error) {
       console.error("Register error:", error)
-      throw error
     }
   },
 
@@ -298,6 +314,60 @@ export const authApi = {
       localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(updatedProfile))
     } catch (error) {
       console.error("Error disconnecting from Whoop:", error)
+      throw error
+    }
+  },
+
+  resendOtp: async (data: ResendOtpRequestData): Promise<ResendOtpResponseData> => {
+    try {
+      const response = await fetch("http://localhost:8000/v1/api/resend-otp/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+
+      const responseData = await response.json()
+
+      if (!response.ok) {
+        // Manejar error con estructura: {message, error, data}
+        if (responseData.error && responseData.message) {
+          throw new Error(responseData.message)
+        }
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
+      }
+
+      return responseData
+    } catch (error) {
+      console.error("Resend OTP error:", error)
+      throw error
+    }
+  },
+
+  verifyAccount: async (data: VerifyAccountRequestData): Promise<VerifyAccountResponseData> => {
+    try {
+      const response = await fetch("http://localhost:8000/v1/api/verify-account/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+
+      const responseData = await response.json()
+
+      if (!response.ok) {
+        // Manejar error con estructura: {message, error, data}
+        if (responseData.error && responseData.message) {
+          throw new Error(responseData.message)
+        }
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
+      }
+
+      return responseData
+    } catch (error) {
+      console.error("Verify account error:", error)
       throw error
     }
   },

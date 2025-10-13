@@ -66,3 +66,29 @@ export interface LoginResponseData {
 export interface LoginErrorResponse {
   error: string
 }
+
+/**
+ * Tipos específicos para el endpoint de Resend OTP
+ */
+export interface ResendOtpRequestData {
+  email: string
+  context: "verify" | "reset_password"
+}
+
+export interface ResendOtpResponseData {
+  message: string
+}
+
+/**
+ * Tipos específicos para el endpoint de Verify Account
+ */
+export interface VerifyAccountRequestData {
+  email: string
+  code: string
+}
+
+export interface VerifyAccountResponseData {
+  message: string
+  access_token?: string
+  refresh_token?: string
+}

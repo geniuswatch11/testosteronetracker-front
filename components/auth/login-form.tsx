@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import toast from "react-hot-toast"
 import { authApi, REGISTER_EMAIL_KEY } from "@/lib/api/auth"
-import { X } from "lucide-react"
+import { X, Eye, EyeOff } from "lucide-react"
 
 interface ValidationErrors {
   [key: string]: string[]
@@ -17,9 +17,10 @@ export default function LoginForm() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [generalError, setGeneralError] = useState<string | null>(null)
-  const [fieldErrors, setFieldErrors] = useState<ValidationErrors>({})
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({})
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
 
   // Verificar si hay un email guardado del registro
   useEffect(() => {
@@ -30,11 +31,46 @@ export default function LoginForm() {
     }
   }, [])
 
+  // Validación de email
+  const validateEmail = (email: string): string | null => {
+    if (!email) {
+      return "Email is required"
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return "Please enter a valid email address"
+    }
+    return null
+  }
+
+  // Validación de password
+  const validatePassword = (password: string): string | null => {
+    if (!password) {
+      return "Password is required"
+    }
+    if (password.length < 6) {
+      return "Password must be at least 6 characters"
+    }
+    return null
+  }
+
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setIsLoading(true)
     setGeneralError(null)
     setFieldErrors({})
+
+    // Validación del lado del cliente
+    const emailError = validateEmail(email)
+    const passwordError = validatePassword(password)
+
+    if (emailError || passwordError) {
+      const errors: { [key: string]: string } = {}
+      if (emailError) errors.email = emailError
+      if (passwordError) errors.password = passwordError
+      setFieldErrors(errors)
+      setIsLoading(false)
+      return
+    }
 
     try {
       await authApi.login({ email, password })
@@ -43,14 +79,9 @@ export default function LoginForm() {
     } catch (error: any) {
       console.error("Login error:", error)
       
-      // Manejar errores de validación de campos
-      if (error.type === "validation" && error.fields) {
-        setFieldErrors(error.fields)
-      } else {
-        // Error general
-        const errorMessage = error instanceof Error ? error.message : "Error al iniciar sesión"
-        setGeneralError(errorMessage)
-      }
+      // Error general
+      const errorMessage = error instanceof Error ? error.message : "Error al iniciar sesión"
+      setGeneralError(errorMessage)
     } finally {
       setIsLoading(false)
     }
@@ -67,17 +98,22 @@ export default function LoginForm() {
           <input
             id="email"
             name="email"
-            type="email"
+            type="text"
             placeholder="you@example.com"
-            required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value)
+              // Limpiar error al escribir
+              if (fieldErrors.email) {
+                setFieldErrors({ ...fieldErrors, email: "" })
+              }
+            }}
             className={`w-full rounded-xl bg-neutral-600 px-4 py-3 text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 ${
               fieldErrors.email ? "ring-2 ring-danger-600" : "focus:ring-primary-600"
             }`}
           />
           {fieldErrors.email && (
-            <p className="text-sm text-danger-600">{fieldErrors.email[0]}</p>
+            <p className="text-sm text-danger-600">{fieldErrors.email}</p>
           )}
         </div>
 
@@ -86,20 +122,39 @@ export default function LoginForm() {
           <label htmlFor="password" className="text-sm text-neutral-400 block">
             Password
           </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="••••••••"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={`w-full rounded-xl bg-neutral-600 px-4 py-3 text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 ${
-              fieldErrors.password ? "ring-2 ring-danger-600" : "focus:ring-primary-600"
-            }`}
-          />
+          <div className="relative">
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value)
+                // Limpiar error al escribir
+                if (fieldErrors.password) {
+                  setFieldErrors({ ...fieldErrors, password: "" })
+                }
+              }}
+              className={`w-full rounded-xl bg-neutral-600 px-4 py-3 pr-12 text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 ${
+                fieldErrors.password ? "ring-2 ring-danger-600" : "focus:ring-primary-600"
+              }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white transition-colors"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
           {fieldErrors.password && (
-            <p className="text-sm text-danger-600">{fieldErrors.password[0]}</p>
+            <p className="text-sm text-danger-600">{fieldErrors.password}</p>
           )}
         </div>
 

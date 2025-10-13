@@ -1,22 +1,31 @@
 "use client"
 
 import RegisterForm from "@/components/auth/register-form"
-import { useLanguage } from "@/lib/i18n/language-context"
-import { Logo } from "@/components/ui/logo"
+import Image from "next/image"
 
 export default function RegisterPage() {
-  const { t } = useLanguage()
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-black p-4">
       <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
+        <div className="text-center space-y-4">
+          {/* Logo */}
           <div className="flex justify-center">
-            <Logo width={100} height={100} />
+            <Image
+              src="/logo_2.png"
+              alt="Genius Testosterone Logo"
+              width={80}
+              height={80}
+              priority
+            />
           </div>
-          <h2 className="mt-2 text-4xl font-bold tracking-tight">GENIUS</h2>
-          <p className="text-xl">TESTOSTERONE</p>
+          
+          {/* Título */}
+          <div>
+            <h1 className="text-2xl font-bold text-white">Register Genius Testosterone</h1>
+            <p className="text-sm text-neutral-400 mt-1">Good to see you.</p>
+          </div>
         </div>
+        
         <RegisterForm />
       </div>
     </main>
