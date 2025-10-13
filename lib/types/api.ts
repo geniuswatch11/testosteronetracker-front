@@ -130,3 +130,23 @@ export interface PasswordResetConfirmData {
 export interface PasswordResetConfirmResponseData {
   message: string
 }
+
+/**
+ * Tipos específicos para el endpoint de Me (User Profile)
+ */
+export interface UserMeData {
+  id: string
+  username: string
+  height: number | null
+  weight: number | null
+  language: "en" | "es"
+  theme: "light" | "dark" | "system"
+  avatar: string | null
+  birth_date: string | null
+  gender: string
+  age: number | null
+  is_complete: boolean
+  profile_completion_percentage: number
+}
+
+export interface UserMeResponse extends ApiResponse<UserMeData> {}

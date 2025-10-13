@@ -15,7 +15,9 @@ import type {
   PasswordResetValidateOtpData,
   PasswordResetValidateOtpResponseData,
   PasswordResetConfirmData,
-  PasswordResetConfirmResponseData
+  PasswordResetConfirmResponseData,
+  UserMeResponse,
+  UserMeData
 } from "@/lib/types/api"
 
 export interface LoginResponse {
@@ -72,6 +74,7 @@ export const REGISTER_EMAIL_KEY = "register_email"
 export const USER_PROFILE_KEY = "user_profile"
 export const SPIKE_CONNECT_KEY = "spike_connect"
 export const IS_COMPLETE_KEY = "is_complete"
+export const USERNAME_KEY = "username"
 
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
@@ -186,6 +189,7 @@ export const authApi = {
       return responseData
     } catch (error) {
       console.error("Register error:", error)
+      throw error
     }
   },
 
@@ -195,6 +199,7 @@ export const authApi = {
     localStorage.removeItem(USER_PROFILE_KEY)
     localStorage.removeItem(SPIKE_CONNECT_KEY)
     localStorage.removeItem(IS_COMPLETE_KEY)
+    localStorage.removeItem(USERNAME_KEY)
 
     // También eliminar de cookies
     Cookies.remove(AUTH_TOKEN_KEY)
@@ -247,6 +252,7 @@ export const authApi = {
       return data
     } catch (error) {
       console.error("Error fetching user profile:", error)
+      throw error
     }
   },
 
@@ -490,5 +496,53 @@ export const authApi = {
       toast.error(errorMessage)
       throw error
     }
+  },
+
+  /**
+   * Obtener el perfil del usuario autenticado desde el endpoint /v1/api/me/
+   */
+  getMe: async (): Promise<UserMeData> => {
+    const token = authApi.getToken()
+
+    if (!token) {
+      throw new Error("No authentication token found")
+    }
+
+    try {
+      const response = await fetch("http://localhost:8000/v1/api/me/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      const responseData: UserMeResponse = await response.json()
+
+      if (!response.ok) {
+        // Manejar error con estructura: {message, error, data}
+        if (responseData.error && responseData.message) {
+          throw new Error(responseData.message)
+        }
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
+      }
+
+      // Guardar el username en localStorage
+      if (responseData.data.username) {
+        localStorage.setItem(USERNAME_KEY, responseData.data.username)
+      }
+
+      return responseData.data
+    } catch (error) {
+      console.error("Get user profile error:", error)
+      throw error
+    }
+  },
+
+  /**
+   * Obtener el username guardado en localStorage
+   */
+  getUsername: (): string | null => {
+    return localStorage.getItem(USERNAME_KEY)
   },
 }

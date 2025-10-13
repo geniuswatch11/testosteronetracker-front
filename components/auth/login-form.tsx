@@ -74,6 +74,15 @@ export default function LoginForm() {
 
     try {
       await authApi.login({ email, password })
+      
+      // Fetch user profile from /v1/api/me/ and store username
+      try {
+        await authApi.getMe()
+      } catch (profileError) {
+        // Log the error but don't block login
+        console.error("Error fetching user profile:", profileError)
+      }
+      
       toast.success("Login successful!")
       router.push("/dashboard")
     } catch (error: any) {

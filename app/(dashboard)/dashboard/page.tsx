@@ -1,44 +1,23 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import { InitializingLoader } from "@/components/dashboard/initializing-loader"
 import { ConfigurationSetup } from "@/components/dashboard/configuration-setup"
 import { ComingSoon } from "@/components/ui/coming-soon"
-import { authApi } from "@/lib/api/auth"
+import { useAuth } from "@/hooks"
 import { useLanguage } from "@/lib/i18n/language-context"
 
+/**
+ * Dashboard Page - Implementa Indirect Data Fetching Pattern
+ * Usa el hook useAuth para manejar la autenticación y estado del usuario
+ */
 export default function DashboardPage() {
-  const router = useRouter()
   const { t } = useLanguage()
-  const [isInitializing, setIsInitializing] = useState(true)
-  const [spikeConnected, setSpikeConnected] = useState(false)
-  const [isComplete, setIsComplete] = useState(false)
-
-  // Efecto para cargar los valores de localStorage/cookies
-  useEffect(() => {
-    const initializeApp = () => {
-      // Verificación adicional de autenticación
-      if (!authApi.isAuthenticated()) {
-        router.replace("/login")
-        return
-      }
-
-      // Obtener valores de SPIKE_CONNECT_KEY y is_complete directamente de localStorage/cookies
-      const spikeConnect = authApi.getSpikeConnect()
-      const complete = authApi.getIsComplete()
-      setSpikeConnected(spikeConnect)
-      setIsComplete(complete)
-
-      // Finalizar la inicialización
-      setIsInitializing(false)
-    }
-
-    initializeApp()
-  }, [router])
+  
+  // Indirect Data Fetching: Toda la lógica de auth está en el hook
+  const { isLoading, spikeConnected, isComplete } = useAuth()
 
   // Mostrar pantalla de inicialización
-  if (isInitializing) {
+  if (isLoading) {
     return <InitializingLoader />
   }
 

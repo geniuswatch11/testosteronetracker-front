@@ -138,6 +138,29 @@ export const translations: Translations = {
       synchronizing: "Synchronizing the data",
       preparingData: "We are preparing all the data with your next recent statistics",
     },
+    store: {
+      title: "Store",
+      subtitle: "These are some of the partners we work with",
+      externalLinkTitle: "You're about to leave our app.",
+      externalLinkMessage: "You will be redirected to an external website that we do not control. There, you can complete your purchase or learn more from our partner.",
+      continue: "Continue",
+      vitamins: {
+        title: "Vitamins",
+        description: "The partner offers high-quality vitamins and supplements designed to support your daily health. From multivitamins to specialized formulas, you can better understand what your body needs and improve your overall well-being.",
+      },
+      whoop: {
+        title: "Whoop",
+        description: "With WHOOP, you can track your heart rate, personalized for your individual baseline and goals. Understand the impact of your behaviors on your sleep and recovery. Analyze your workouts to optimize your training.",
+      },
+      labsSorio: {
+        title: "Labs sorio",
+        description: "Labs sorio offers professional lab testing to give you a clear picture of your nutritional health. With accurate, science-based results, you can better understand what your body needs and improve your overall well-being.",
+      },
+      muse: {
+        title: "Muse",
+        description: "Muse is a brain-sensing headband that helps you meditate better throughout the day. By monitoring your mental state, Muse sends you real-time innovations. It helps you understand your self state.",
+      },
+    },
   },
   es: {
     common: {
@@ -267,6 +290,29 @@ export const translations: Translations = {
     loading: {
       synchronizing: "Sincronizando los datos",
       preparingData: "Estamos preparando todos los datos con tus próximas estadísticas recientes",
+    },
+    store: {
+      title: "Tienda",
+      subtitle: "Estos son algunos de los socios con los que trabajamos",
+      externalLinkTitle: "Estás a punto de salir de nuestra app.",
+      externalLinkMessage: "Serás redirigido a un sitio web externo que no controlamos. Allí, puedes completar tu compra o aprender más de nuestro socio.",
+      continue: "Continuar",
+      vitamins: {
+        title: "Vitaminas",
+        description: "El socio ofrece vitaminas y suplementos de alta calidad diseñados para apoyar tu salud diaria. Desde multivitamínicos hasta fórmulas especializadas, puedes entender mejor lo que tu cuerpo necesita y mejorar tu bienestar general.",
+      },
+      whoop: {
+        title: "Whoop",
+        description: "Con WHOOP, puedes rastrear tu ritmo cardíaco, personalizado para tu línea base y objetivos individuales. Comprende el impacto de tus comportamientos en tu sueño y recuperación. Analiza tus entrenamientos para optimizar tu entrenamiento.",
+      },
+      labsSorio: {
+        title: "Labs sorio",
+        description: "Labs sorio ofrece pruebas de laboratorio profesionales para darte una imagen clara de tu salud nutricional. Con resultados precisos y basados en la ciencia, puedes entender mejor lo que tu cuerpo necesita y mejorar tu bienestar general.",
+      },
+      muse: {
+        title: "Muse",
+        description: "Muse es una diadema sensora cerebral que te ayuda a meditar mejor durante todo el día. Al monitorear tu estado mental, Muse te envía innovaciones en tiempo real. Te ayuda a entender tu estado personal.",
+      },
     },
   },
 }
