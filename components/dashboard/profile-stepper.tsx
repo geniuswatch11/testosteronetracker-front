@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Stepper from "react-stepper-horizontal"
+import { Stepper } from "@/components/ui/stepper"
 import { useRouter } from "next/navigation"
 import { AlertTriangle } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
@@ -19,11 +19,11 @@ export default function ProfileStepper({ hasWhoop, hasPersonalData }: ProfileSte
   const steps = [
     {
       title: t("stepper.connectDevice"),
-      onClick: (router: ReturnType<typeof useRouter>) => router.push("/settings?section=devices"),
+      onClick: () => router.push("/settings?section=devices"),
     },
     {
       title: t("stepper.personalData"),
-      onClick: (router: ReturnType<typeof useRouter>) => router.push("/settings?section=personal-data"),
+      onClick: () => router.push("/settings?section=personal-data"),
     },
   ]
 
@@ -43,22 +43,15 @@ export default function ProfileStepper({ hasWhoop, hasPersonalData }: ProfileSte
         <p className="text-sm text-yellow-700 dark:text-yellow-400">{t("dashboard.completeProfile")}</p>
       </div>
       <Stepper
-        steps={steps.map((step, index) => ({
-          ...step,
-          onClick: () => step.onClick(router),
-        }))}
+        steps={steps}
         activeStep={activeStep}
         activeColor="#3B82F6"
         completeColor="#3B82F6"
         defaultColor="#9CA3AF"
-        circleFontSize={16}
-        titleFontSize={14}
         activeTitleColor="#3B82F6"
         completeTitleColor="#3B82F6"
         defaultTitleColor="#6B7280"
         size={32}
-        circleFontColor="#FFFFFF"
-        lineMarginOffset={0}
       />
     </div>
   )
