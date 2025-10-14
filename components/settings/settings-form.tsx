@@ -312,7 +312,7 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
 
       <div className="space-y-4">
         <h3 className="font-semibold">{t("settings.faqs")}</h3>
-        <button type="button" onClick={() => router.push('/coming-soon')} className="w-full text-left bg-neutral-800 p-4 rounded-lg flex justify-between items-center hover:bg-neutral-700 transition-colors">
+        <button type="button" onClick={() => router.push('/faqs')} className="w-full text-left bg-neutral-800 p-4 rounded-lg flex justify-between items-center hover:bg-neutral-700 transition-colors">
           <span>{t("settings.faqs")}</span>
           <span className="text-neutral-400">›</span>
         </button>

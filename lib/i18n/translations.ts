@@ -188,6 +188,28 @@ export const translations: Translations = {
         description: "Muse is a brain-sensing headband that helps you meditate better throughout the day. By monitoring your mental state, Muse sends you real-time innovations. It helps you understand your self state.",
       },
     },
+    faqs: {
+      title: "FAQ's",
+      description: "Here are some answers to the questions our customers ask the most. This app is not intended to provide medical advice. If you have health concerns, please consult a healthcare professional before making decisions based on the data presented here.",
+      questions: {
+        q1: "1. Is the app a medical tool?",
+        q2: "2. Can I use my data for medical practices?",
+        q3: "3. How accurate are the measurements?",
+        q4: "4. Will this improve my sleep or testosterone levels?",
+        q5: "5. Why am I asked about alcohol, drugs, or diet?",
+        q6: "6. Can I share this data with my doctor?",
+        q7: "7. How is my data stored and used?",
+      },
+      answers: {
+        a1: "No, this app is not a medical tool and should not be used for diagnosis, treatment, or prevention of any health condition. It is designed for informational and tracking purposes only.",
+        a2: "While you can track and view your data, it should not replace professional medical advice. Always consult with a qualified healthcare provider for medical decisions.",
+        a3: "The measurements depend on the accuracy of your connected devices (like Whoop) and the information you provide. While we strive for accuracy, results should be considered estimates.",
+        a4: "This app helps you track and understand patterns in your health data. Improvements depend on your lifestyle choices, medical treatment, and other factors outside the app's control.",
+        a5: "These factors can significantly impact your testosterone levels, sleep quality, and overall health metrics. Understanding their influence helps you make informed decisions.",
+        a6: "Yes, you can export and share your data with healthcare professionals. However, remember that this data is for informational purposes and should complement, not replace, professional medical testing.",
+        a7: "Your data is encrypted and stored securely. We use it only to provide app functionality and improve your experience. We never sell your personal health information. Review our Privacy Policy for complete details.",
+      },
+    },
   },
   es: {
     common: {
@@ -366,6 +388,28 @@ export const translations: Translations = {
       muse: {
         title: "Muse",
         description: "Muse es una diadema sensora cerebral que te ayuda a meditar mejor durante todo el día. Al monitorear tu estado mental, Muse te envía innovaciones en tiempo real. Te ayuda a entender tu estado personal.",
+      },
+    },
+    faqs: {
+      title: "Preguntas Frecuentes",
+      description: "Aquí hay algunas respuestas a las preguntas que nuestros clientes hacen con más frecuencia. Esta aplicación no está destinada a proporcionar asesoramiento médico. Si tiene problemas de salud, consulte a un profesional de la salud antes de tomar decisiones basadas en los datos presentados aquí.",
+      questions: {
+        q1: "1. ¿Es la app una herramienta médica?",
+        q2: "2. ¿Puedo usar mis datos para prácticas médicas?",
+        q3: "3. ¿Qué tan precisas son las mediciones?",
+        q4: "4. ¿Esto mejorará mi sueño o niveles de testosterona?",
+        q5: "5. ¿Por qué me preguntan sobre alcohol, drogas o dieta?",
+        q6: "6. ¿Puedo compartir estos datos con mi doctor?",
+        q7: "7. ¿Cómo se almacenan y usan mis datos?",
+      },
+      answers: {
+        a1: "No, esta aplicación no es una herramienta médica y no debe usarse para el diagnóstico, tratamiento o prevención de ninguna condición de salud. Está diseñada únicamente con fines informativos y de seguimiento.",
+        a2: "Si bien puede rastrear y ver sus datos, no deben reemplazar el consejo médico profesional. Siempre consulte con un proveedor de atención médica calificado para decisiones médicas.",
+        a3: "Las mediciones dependen de la precisión de sus dispositivos conectados (como Whoop) y la información que proporcione. Si bien nos esforzamos por la precisión, los resultados deben considerarse estimaciones.",
+        a4: "Esta aplicación le ayuda a rastrear y comprender patrones en sus datos de salud. Las mejoras dependen de sus elecciones de estilo de vida, tratamiento médico y otros factores fuera del control de la aplicación.",
+        a5: "Estos factores pueden impactar significativamente sus niveles de testosterona, calidad del sueño y métricas generales de salud. Comprender su influencia le ayuda a tomar decisiones informadas.",
+        a6: "Sí, puede exportar y compartir sus datos con profesionales de la salud. Sin embargo, recuerde que estos datos son solo para fines informativos y deben complementar, no reemplazar, las pruebas médicas profesionales.",
+        a7: "Sus datos están encriptados y almacenados de forma segura. Los usamos solo para proporcionar funcionalidad de la aplicación y mejorar su experiencia. Nunca vendemos su información de salud personal. Revise nuestra Política de Privacidad para obtener detalles completos.",
       },
     },
   },
