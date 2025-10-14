@@ -7,6 +7,7 @@ import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import toast from "react-hot-toast"
+import Cookies from "js-cookie"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -21,6 +22,7 @@ import { useAuth } from "@/hooks/use-auth"
 import { useDeviceDisconnection } from "@/hooks/use-device-disconnection"
 import { userApi } from "@/lib/api/user"
 import { authApi } from "@/lib/api/auth"
+import { spikeApi } from "@/lib/api/spike"
 import type { UserProfileData } from "@/lib/types/api"
 
 const settingsSchema = yup.object({
@@ -64,7 +66,7 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
   // Estado de conexión del dispositivo
   const [isDeviceConnected, setIsDeviceConnected] = useState(false);
   const [connectedProvider, setConnectedProvider] = useState<string>("");
-  const [spikeId, setSpikeId] = useState<number | null>(null);
+  const [spikeIdHash, setSpikeIdHash] = useState<string | null>(null);
 
   const { control, handleSubmit, setValue, watch, reset, setError, formState: { errors, dirtyFields } } = 
   useForm<SettingsFormData>({
@@ -106,15 +108,44 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
     }
   }, [userProfile]);
 
-  // Verificar estado de conexión del dispositivo
+  // Verificar estado de conexión del dispositivo llamando a la API
   useEffect(() => {
-    const spikeConnect = localStorage.getItem("spike_connect") === "true";
-    const provider = localStorage.getItem("spike_provider") || "";
-    const storedSpikeId = localStorage.getItem("spike_id");
-    
-    setIsDeviceConnected(spikeConnect);
-    setConnectedProvider(provider);
-    setSpikeId(storedSpikeId ? parseInt(storedSpikeId) : null);
+    const checkDeviceConnection = async () => {
+      try {
+        console.log("🔷 [SETTINGS] Verificando estado del dispositivo...")
+        const response = await spikeApi.getMyDevice()
+        
+        // Si hay dispositivo conectado, actualizar estados
+        setIsDeviceConnected(true)
+        setConnectedProvider(response.data.provider)
+        setSpikeIdHash(response.data.spike_id_hash)
+        
+        console.log("✅ [SETTINGS] Dispositivo conectado:", response.data)
+      } catch (error) {
+        // Si hay error (404), significa que no hay dispositivo conectado
+        console.log("ℹ️ [SETTINGS] No hay dispositivo conectado")
+        setIsDeviceConnected(false)
+        setConnectedProvider("")
+        setSpikeIdHash(null)
+      }
+    }
+
+    checkDeviceConnection()
+
+    // Listener para refrescar el estado cuando la página recupera visibilidad
+    // Útil cuando el usuario regresa después de conectar un dispositivo
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        console.log("🔷 [SETTINGS] Página visible, refrescando estado del dispositivo...")
+        checkDeviceConnection()
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
   }, []);
 
   // Helper para formatear fecha a YYYY-MM-DD
@@ -227,48 +258,79 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
     setIsAvatarModalOpen(false);
   };
 
+  // Función para refrescar el estado de conexión del dispositivo
+  const refreshDeviceConnection = async () => {
+    try {
+      console.log("🔷 [SETTINGS] Refrescando estado del dispositivo...");
+      const response = await spikeApi.getMyDevice();
+      
+      setIsDeviceConnected(true);
+      setConnectedProvider(response.data.provider);
+      setSpikeIdHash(response.data.spike_id_hash);
+      
+      console.log("✅ [SETTINGS] Dispositivo conectado:", response.data);
+    } catch (error) {
+      console.log("ℹ️ [SETTINGS] No hay dispositivo conectado");
+      setIsDeviceConnected(false);
+      setConnectedProvider("");
+      setSpikeIdHash(null);
+    }
+  };
+
   const handleDeviceSelect = (deviceName: string) => {
     console.log("Device selected:", deviceName);
     // El DeviceModal maneja toda la lógica de conexión internamente
   };
 
   const handleDisconnectDevice = async () => {
-    if (!isDeviceConnected) {
+    if (!isDeviceConnected || !spikeIdHash) {
       toast.error(t("device.connection.noDeviceConnected"));
       return;
     }
 
-    // Iniciar el proceso de desconexión con polling
-    const success = await disconnectDevice();
+    // Iniciar el proceso de desconexión pasando el spike_id_hash
+    const success = await disconnectDevice(spikeIdHash);
 
     if (success) {
-      // Limpiar localStorage
-      localStorage.removeItem("spike_connect");
+      console.log("🔷 [SETTINGS] Desconexión exitosa, actualizando estado...");
+      
+      // Establecer spike_connect a "false" en localStorage (NO eliminar)
+      localStorage.setItem("spike_connect", "false");
       localStorage.removeItem("spike_provider");
       localStorage.removeItem("spike_id");
       
-      // Actualizar el perfil del usuario en caché
+      // Establecer spike_connect a "false" en cookies (NO eliminar)
+      Cookies.set("spike_connect", "false", { expires: 365 });
+      
+      // Actualizar el perfil del usuario en caché con spike_connect = false
       const cachedUser = localStorage.getItem("userProfile");
       if (cachedUser) {
-        const userProfile = JSON.parse(cachedUser);
-        userProfile.spike_connect = false;
-        localStorage.setItem("userProfile", JSON.stringify(userProfile));
+        try {
+          const userProfile = JSON.parse(cachedUser);
+          userProfile.spike_connect = false;
+          localStorage.setItem("userProfile", JSON.stringify(userProfile));
+          console.log("✅ [SETTINGS] userProfile.spike_connect actualizado a false");
+        } catch (error) {
+          console.error("❌ [SETTINGS] Error al actualizar userProfile en caché:", error);
+        }
       }
       
-      // Actualizar estados
+      // Actualizar estados locales del componente
       setIsDeviceConnected(false);
       setConnectedProvider("");
-      setSpikeId(null);
+      setSpikeIdHash(null);
       
       toast.success(t("device.connection.disconnected"));
       
-      // Refrescar el perfil si hay callback
+      // Refrescar el perfil desde el backend
       if (onProfileUpdated) {
         await onProfileUpdated();
       }
+      
+      console.log("✅ [SETTINGS] spike_connect actualizado a false en localStorage y cookies");
     } else {
-      // Mostrar error si la desconexión falló después de 3 intentos
-      toast.error(t("device.connection.disconnectMaxRetries"));
+      // Mostrar error si la desconexión falló
+      toast.error(disconnectionError || t("device.connection.disconnectError"));
     }
   };
 

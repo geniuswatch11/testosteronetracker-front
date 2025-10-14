@@ -285,11 +285,61 @@ export interface SpikeFaqResponseData {
 export interface SpikeFaqResponse extends ApiResponse<SpikeFaqResponseData> {}
 
 /**
- * Tipos específicos para el endpoint de Spike Delete Device (/spike/delete/)
+ * Tipos específicos para el endpoint de Spike My Device (/spike/my-device/)
+ */
+export interface SpikeMyDeviceData {
+  id: string
+  spike_id_hash: string
+  provider: string
+  is_active: boolean
+  consent_given: boolean
+  last_fetched_at: string
+}
+
+export interface SpikeMyDeviceResponse extends ApiResponse<SpikeMyDeviceData> {}
+
+/**
+ * Tipos específicos para el endpoint de Spike Delete Device (/spike/delete/:spike_id_hash/)
  */
 export interface SpikeDeleteDeviceResponseData {
-  task_id: string
-  provider: string
+  message: string
 }
 
 export interface SpikeDeleteDeviceResponse extends ApiResponse<SpikeDeleteDeviceResponseData> {}
+
+/**
+ * Tipos específicos para el endpoint de Basic Metrics (/home/basic-metrics/)
+ */
+export interface BasicMetricsData {
+  // Definir según la respuesta real del backend
+  [key: string]: any
+}
+
+export interface BasicMetricsResponse extends ApiResponse<BasicMetricsData> {}
+
+/**
+ * Tipos específicos para los endpoints de Stats
+ */
+export interface StatsDataPoint {
+  date: string
+  value: number
+}
+
+/**
+ * Respuesta de stats - el data contiene directamente el array de puntos
+ */
+export interface StatsResponseData {
+  data: StatsDataPoint[]
+}
+
+export interface StatsResponse extends ApiResponse<StatsResponseData> {}
+
+/**
+ * Tipos específicos para cada endpoint de stats
+ */
+export interface CaloriesStatsResponse extends StatsResponse {}
+export interface HeartRateStatsResponse extends StatsResponse {}
+export interface SleepDurationStatsResponse extends StatsResponse {}
+export interface SleepEfficiencyStatsResponse extends StatsResponse {}
+export interface SleepInterruptionsStatsResponse extends StatsResponse {}
+export interface Spo2StatsResponse extends StatsResponse {}

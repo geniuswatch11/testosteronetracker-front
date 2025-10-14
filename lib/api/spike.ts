@@ -10,6 +10,7 @@ import type {
   SpikeConsentCallbackResponse,
   SpikeFaqRequestData,
   SpikeFaqResponse,
+  SpikeMyDeviceResponse,
   SpikeDeleteDeviceResponse,
   ApiErrorResponse,
 } from "@/lib/types/api"
@@ -144,23 +145,58 @@ export const spikeApi = {
   },
 
   /**
-   * Desconectar dispositivo
-   * POST /spike/delete/
-   * @returns task_id y provider para hacer polling del estado
+   * Obtener información del dispositivo conectado
+   * GET /spike/my-device/
+   * @returns Información del dispositivo conectado o error si no hay dispositivo
    */
-  deleteDevice: async (): Promise<SpikeDeleteDeviceResponse> => {
+  getMyDevice: async (): Promise<SpikeMyDeviceResponse> => {
     const token = authApi.getToken()
 
     if (!token) {
       throw new Error("No authentication token found")
     }
 
-    console.log("🔷 [SPIKE API] deleteDevice - Iniciando desconexión")
+    console.log("🔷 [SPIKE API] getMyDevice - Obteniendo información del dispositivo")
 
-    const response = await apiRequest(`${API_BASE_URL}/spike/delete/`, {
-      method: "POST",
+    const response = await apiRequest(`${API_BASE_URL}/spike/my-device/`, {
+      method: "GET",
       headers: {
-        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    console.log("🔷 [SPIKE API] getMyDevice - Status:", response.status)
+
+    if (response.ok) {
+      const result: SpikeMyDeviceResponse = await response.json()
+      console.log("🔷 [SPIKE API] getMyDevice - Respuesta exitosa:", result)
+      return result
+    }
+
+    // Manejar errores (404 significa que no hay dispositivo conectado)
+    const errorData: ApiErrorResponse = await response.json()
+    console.error("🔷 [SPIKE API] getMyDevice - Error:", errorData)
+    throw new Error(errorData.message || "Error getting device information")
+  },
+
+  /**
+   * Desconectar dispositivo
+   * DELETE /spike/delete/:spike_id_hash/
+   * @param spikeIdHash - Hash del dispositivo a desconectar
+   * @returns Confirmación de desconexión
+   */
+  deleteDevice: async (spikeIdHash: string): Promise<SpikeDeleteDeviceResponse> => {
+    const token = authApi.getToken()
+
+    if (!token) {
+      throw new Error("No authentication token found")
+    }
+
+    console.log("🔷 [SPIKE API] deleteDevice - Iniciando desconexión para:", spikeIdHash)
+
+    const response = await apiRequest(`${API_BASE_URL}/spike/delete/${spikeIdHash}/`, {
+      method: "DELETE",
+      headers: {
         Authorization: `Bearer ${token}`,
       },
     })
@@ -173,7 +209,7 @@ export const spikeApi = {
       return result
     }
 
-    // Manejar errores
+    // Manejar errores (404 significa que el dispositivo ya fue desconectado)
     const errorData: ApiErrorResponse = await response.json()
     console.error("🔷 [SPIKE API] deleteDevice - Error:", errorData)
     throw new Error(errorData.message || "Error deleting device")
