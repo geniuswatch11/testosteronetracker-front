@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import toast from "react-hot-toast"
 import { authApi, REGISTER_EMAIL_KEY } from "@/lib/api/auth"
@@ -15,6 +15,7 @@ interface ValidationErrors {
 
 export default function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
   const [generalError, setGeneralError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({})
@@ -22,14 +23,18 @@ export default function LoginForm() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
 
-  // Verificar si hay un email guardado del registro
+  // Verificar si hay un email en query params o guardado del registro
   useEffect(() => {
+    const emailParam = searchParams.get("email")
     const registeredEmail = localStorage.getItem(REGISTER_EMAIL_KEY)
-    if (registeredEmail) {
+    
+    if (emailParam) {
+      setEmail(emailParam)
+    } else if (registeredEmail) {
       setEmail(registeredEmail)
       localStorage.removeItem(REGISTER_EMAIL_KEY)
     }
-  }, [])
+  }, [searchParams])
 
   // Validación de email
   const validateEmail = (email: string): string | null => {

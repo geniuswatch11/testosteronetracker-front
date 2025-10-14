@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import LoginForm from "@/components/auth/login-form"
 import Image from "next/image"
 
@@ -26,7 +27,9 @@ export default function LoginPage() {
           </div>
         </div>
         
-        <LoginForm />
+        <Suspense fallback={<div className="text-center text-muted-foreground">Loading...</div>}>
+          <LoginForm />
+        </Suspense>
       </div>
     </main>
   )

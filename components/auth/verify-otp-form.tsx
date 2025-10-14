@@ -144,7 +144,7 @@ export default function VerifyOtpForm({ email, context = "verify" }: VerifyOtpFo
         {/* Continue Button - Fuera del card */}
         <div className="w-full max-w-sm mt-8">
           <button
-            onClick={() => router.push("/login")}
+            onClick={() => router.push(`/login?email=${encodeURIComponent(email)}`)}
             className="w-full rounded-full bg-primary-600 py-4 text-center text-lg font-semibold text-black transition-all hover:bg-primary-500 active:scale-95"
           >
             Continue
