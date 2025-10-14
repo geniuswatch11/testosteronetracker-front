@@ -57,6 +57,7 @@ export interface ValidationError {
 }
 
 export const AUTH_TOKEN_KEY = "access_token"
+export const REFRESH_TOKEN_KEY = "refresh_token"
 export const REGISTER_EMAIL_KEY = "register_email"
 export const USER_PROFILE_KEY = "user_profile"
 export const SPIKE_CONNECT_KEY = "spike_connect"
@@ -96,6 +97,11 @@ export const authApi = {
 
       // Guardar el access_token en localStorage
       localStorage.setItem(AUTH_TOKEN_KEY, data.access_token)
+
+      // Guardar el refresh_token en localStorage
+      if (data.refresh_token) {
+        localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh_token)
+      }
 
       // También guardar en cookie para que el middleware pueda detectarlo
       Cookies.set(AUTH_TOKEN_KEY, data.access_token, { expires: 1 }) // 1 día
@@ -182,40 +188,53 @@ export const authApi = {
 
   logout: async (): Promise<void> => {
     const token = authApi.getToken()
+    const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
     
     // Llamar al endpoint de logout del backend
     try {
-      if (token) {
-        await fetch("http://localhost:8000/v1/api/logout/", {
+      if (token && refreshToken) {
+        const response = await fetch("http://localhost:8000/v1/api/logout/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+          body: JSON.stringify({
+            refresh_token: refreshToken,
+          }),
         })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.message || "Error al cerrar sesión")
+        }
       }
     } catch (error) {
       console.error("Logout API error:", error)
-      // Continuar con la limpieza local incluso si falla el backend
-    }
-    
-    // Limpiar localStorage
-    localStorage.removeItem(AUTH_TOKEN_KEY)
-    localStorage.removeItem(USER_PROFILE_KEY)
-    localStorage.removeItem(SPIKE_CONNECT_KEY)
-    localStorage.removeItem(IS_COMPLETE_KEY)
-    localStorage.removeItem(USERNAME_KEY)
-    localStorage.removeItem("user_id")
-    localStorage.removeItem("profile_id")
-    localStorage.removeItem("locale")
-    localStorage.removeItem("avatars_cache")
-    localStorage.removeItem("avatars_cache_timestamp")
+      // Lanzar el error para que el componente lo maneje
+      throw error
+    } finally {
+      // Limpiar localStorage siempre, incluso si falla el backend
+      localStorage.removeItem(AUTH_TOKEN_KEY)
+      localStorage.removeItem(REFRESH_TOKEN_KEY)
+      localStorage.removeItem(USER_PROFILE_KEY)
+      localStorage.removeItem(SPIKE_CONNECT_KEY)
+      localStorage.removeItem(IS_COMPLETE_KEY)
+      localStorage.removeItem(USERNAME_KEY)
+      localStorage.removeItem("user_id")
+      localStorage.removeItem("profile_id")
+      localStorage.removeItem("locale")
+      localStorage.removeItem("avatars_cache")
+      localStorage.removeItem("avatars_cache_timestamp")
+      localStorage.removeItem("spike_provider")
+      localStorage.removeItem("spike_id")
 
-    // Limpiar todas las cookies
-    Cookies.remove(AUTH_TOKEN_KEY)
-    Cookies.remove(SPIKE_CONNECT_KEY)
-    Cookies.remove(IS_COMPLETE_KEY)
-    Cookies.remove("locale")
+      // Limpiar todas las cookies
+      Cookies.remove(AUTH_TOKEN_KEY)
+      Cookies.remove(SPIKE_CONNECT_KEY)
+      Cookies.remove(IS_COMPLETE_KEY)
+      Cookies.remove("locale")
+    }
   },
 
   isAuthenticated: (): boolean => {

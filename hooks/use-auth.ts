@@ -5,6 +5,7 @@ import { authApi } from "@/lib/api/auth"
 import { userApi } from "@/lib/api/user"
 import type { UserProfileData } from "@/lib/types/api"
 import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
 
 interface UseAuthReturn {
   user: UserProfileData | null
@@ -58,11 +59,22 @@ export function useAuth(): UseAuthReturn {
   }
 
   const logout = async () => {
-    await authApi.logout()
-    setUser(null)
-    setSpikeConnected(false)
-    setIsComplete(false)
-    router.push("/login")
+    try {
+      await authApi.logout()
+      setUser(null)
+      setSpikeConnected(false)
+      setIsComplete(false)
+      router.push("/login")
+    } catch (error) {
+      console.error("Logout error:", error)
+      const errorMessage = error instanceof Error ? error.message : "Failed to logout"
+      toast.error(errorMessage)
+      // Aún así redirigir al login ya que el localStorage se limpió
+      setUser(null)
+      setSpikeConnected(false)
+      setIsComplete(false)
+      router.push("/login")
+    }
   }
 
   const refreshUser = async () => {

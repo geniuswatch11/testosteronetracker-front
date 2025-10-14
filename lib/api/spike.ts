@@ -10,6 +10,7 @@ import type {
   SpikeConsentCallbackResponse,
   SpikeFaqRequestData,
   SpikeFaqResponse,
+  SpikeDeleteDeviceResponse,
   ApiErrorResponse,
 } from "@/lib/types/api"
 
@@ -144,17 +145,17 @@ export const spikeApi = {
 
   /**
    * Desconectar dispositivo
-   * POST /spike/delete/:spike_id/
-   * @param spikeId - ID del dispositivo Spike a desconectar
+   * POST /spike/delete/
+   * @returns task_id y provider para hacer polling del estado
    */
-  deleteDevice: async (spikeId: number): Promise<ApiResponse<{ message: string }>> => {
+  deleteDevice: async (): Promise<SpikeDeleteDeviceResponse> => {
     const token = authApi.getToken()
 
     if (!token) {
       throw new Error("No authentication token found")
     }
 
-    console.log("🔷 [SPIKE API] deleteDevice - Desconectando spike_id:", spikeId)
+    console.log("🔷 [SPIKE API] deleteDevice - Iniciando desconexión")
 
     const response = await apiRequest(`${API_BASE_URL}/spike/delete/`, {
       method: "POST",
@@ -167,7 +168,7 @@ export const spikeApi = {
     console.log("🔷 [SPIKE API] deleteDevice - Status:", response.status)
 
     if (response.ok) {
-      const result: ApiResponse<{ message: string }> = await response.json()
+      const result: SpikeDeleteDeviceResponse = await response.json()
       console.log("🔷 [SPIKE API] deleteDevice - Respuesta exitosa:", result)
       return result
     }

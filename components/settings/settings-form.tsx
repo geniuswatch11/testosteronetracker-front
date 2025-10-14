@@ -18,9 +18,9 @@ import DeviceModal from "@/components/settings/device-modal"
 import { LanguageToggle } from "@/components/settings/language-toggle"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { useAuth } from "@/hooks/use-auth"
+import { useDeviceDisconnection } from "@/hooks/use-device-disconnection"
 import { userApi } from "@/lib/api/user"
 import { authApi } from "@/lib/api/auth"
-import { spikeApi } from "@/lib/api/spike"
 import type { UserProfileData } from "@/lib/types/api"
 
 const settingsSchema = yup.object({
@@ -59,7 +59,7 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isDisconnecting, setIsDisconnecting] = useState(false);
+  const { isDisconnecting, error: disconnectionError, disconnectDevice, resetDisconnection } = useDeviceDisconnection();
   
   // Estado de conexión del dispositivo
   const [isDeviceConnected, setIsDeviceConnected] = useState(false);
@@ -233,15 +233,15 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
   };
 
   const handleDisconnectDevice = async () => {
-    if (!spikeId) {
+    if (!isDeviceConnected) {
       toast.error(t("device.connection.noDeviceConnected"));
       return;
     }
 
-    setIsDisconnecting(true);
-    try {
-      await spikeApi.deleteDevice(spikeId);
-      
+    // Iniciar el proceso de desconexión con polling
+    const success = await disconnectDevice();
+
+    if (success) {
       // Limpiar localStorage
       localStorage.removeItem("spike_connect");
       localStorage.removeItem("spike_provider");
@@ -266,11 +266,9 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
       if (onProfileUpdated) {
         await onProfileUpdated();
       }
-    } catch (error) {
-      console.error("Error disconnecting device:", error);
-      toast.error(t("device.connection.disconnectError"));
-    } finally {
-      setIsDisconnecting(false);
+    } else {
+      // Mostrar error si la desconexión falló después de 3 intentos
+      toast.error(t("device.connection.disconnectMaxRetries"));
     }
   };
 

@@ -283,3 +283,13 @@ export interface SpikeFaqResponseData {
 }
 
 export interface SpikeFaqResponse extends ApiResponse<SpikeFaqResponseData> {}
+
+/**
+ * Tipos específicos para el endpoint de Spike Delete Device (/spike/delete/)
+ */
+export interface SpikeDeleteDeviceResponseData {
+  task_id: string
+  provider: string
+}
+
+export interface SpikeDeleteDeviceResponse extends ApiResponse<SpikeDeleteDeviceResponseData> {}
