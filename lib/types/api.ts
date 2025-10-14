@@ -412,3 +412,64 @@ export type SleepDurationStatsResponse = SleepDurationStatsData | ApiErrorRespon
 export type SleepEfficiencyStatsResponse = SleepEfficiencyStatsData | ApiErrorResponse
 export type SleepInterruptionsStatsResponse = SleepInterruptionsStatsData | ApiErrorResponse
 export type Spo2StatsResponse = Spo2StatsData | ApiErrorResponse
+
+/**
+ * Tipos específicos para el endpoint de Energy Levels (/home/energy-levels/)
+ */
+export interface EnergyLevelHistoryPoint {
+  energy: number
+  date: string
+}
+
+export interface EnergyLevelStats {
+  current_level: number
+  highest_level: number
+  lowest_level: number
+  average_level: number
+}
+
+export interface EnergyLevelsData {
+  stats: EnergyLevelStats
+  history: EnergyLevelHistoryPoint[]
+}
+
+export interface EnergyLevelsResponse extends ApiResponse<EnergyLevelsData> {}
+
+/**
+ * Tipos específicos para el endpoint de Basic Metrics (/home/basic-metrics/)
+ */
+export interface BasicMetricsResume {
+  hrv_rmssd: number
+  sleep_efficiency: number
+  sleep_duration: number
+  date: string
+}
+
+export interface SleepResumePoint {
+  hrv_rmssd: number
+  sleep_efficiency: number
+  sleep_duration: number
+  sleep_interruptions: number
+  sleep_score: number
+  date: string
+}
+
+export interface RemResumePoint {
+  sleep_duration_rem: number
+  date: string
+}
+
+export interface SpoResumePoint {
+  spo2: number
+  date: string
+}
+
+export interface BasicMetricsDataResponse {
+  resume: BasicMetricsResume
+  dates: string[]
+  sleep_resume: SleepResumePoint[]
+  rem_resume: RemResumePoint[]
+  spo_resume: SpoResumePoint[]
+}
+
+export interface BasicMetricsApiResponse extends ApiResponse<BasicMetricsDataResponse> {}

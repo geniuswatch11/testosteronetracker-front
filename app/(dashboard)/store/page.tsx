@@ -14,28 +14,28 @@ export default function StorePage() {
       icon: Heart,
       title: t("store.vitamins.title"),
       description: t("store.vitamins.description"),
-      externalUrl: "https://www.google.com",
+      externalUrl: "https://geniushormo.com/vitaminas/",
     },
     {
       id: "whoop",
       icon: Activity,
       title: t("store.whoop.title"),
       description: t("store.whoop.description"),
-      externalUrl: "https://www.google.com",
+      externalUrl: "https://join.whoop.com/us/en/GENIUS/",
     },
     {
       id: "labs-sorio",
       icon: FlaskConical,
       title: t("store.labsSorio.title"),
       description: t("store.labsSorio.description"),
-      externalUrl: "https://www.google.com",
+      externalUrl: "https://geniushormo.com/",
     },
     {
       id: "muse",
       icon: Bed,
       title: t("store.muse.title"),
       description: t("store.muse.description"),
-      externalUrl: "https://www.google.com",
+      externalUrl: "https://choosemuse.com/pages/muse-2-offers",
     },
   ]
 
@@ -62,6 +62,7 @@ export default function StorePage() {
                 icon={partner.icon}
                 title={partner.title}
                 description={partner.description}
+                externalUrl={partner.externalUrl}
               />
             ))}
           </div>
