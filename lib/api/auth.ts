@@ -16,8 +16,7 @@ import type {
   PasswordResetValidateOtpResponseData,
   PasswordResetConfirmData,
   PasswordResetConfirmResponseData,
-  UserMeResponse,
-  UserMeData
+  UserProfileData
 } from "@/lib/types/api"
 
 export interface LoginResponse {
@@ -44,18 +43,6 @@ export interface RegisterResponse {
   username: string
 }
 
-export interface UserProfile {
-  id: number
-  email: string
-  avatar: string
-  birth_date: string | null
-  height: number | null
-  weight: number | null
-  theme: "white" | "dark" | "system"
-  lenguaje: "en" | "es"
-  has_client_id: boolean
-  is_complete: boolean
-}
 
 export interface ErrorResponse {
   detail: string | ValidationError[]
@@ -226,43 +213,9 @@ export const authApi = {
     return isComplete === "true"
   },
 
-  getUserProfile: async (): Promise<UserProfile> => {
-    const token = authApi.getToken()
-
-    if (!token) {
-      throw new Error("No authentication token found")
-    }
-
-    try {
-      const response = await apiRequest("https://api.geniushpro.com/users/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`)
-      }
-
-      const data: UserProfile = await response.json()
-
-      // Guardar el perfil en localStorage para acceso rápido
-      localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(data))
-
-      return data
-    } catch (error) {
-      console.error("Error fetching user profile:", error)
-      throw error
-    }
-  },
-
-  getCachedUserProfile: (): UserProfile | null => {
+  getCachedUserProfile: (): UserProfileData | null => {
     const profileData = localStorage.getItem(USER_PROFILE_KEY)
     return profileData ? JSON.parse(profileData) : null
-  },
-
-  isProfileComplete: (profile: UserProfile): boolean => {
-    return !!profile.birth_date && !!profile.height && !!profile.weight && profile.has_client_id
   },
 
   connectWhoop: async (): Promise<void> => {
@@ -278,7 +231,7 @@ export const authApi = {
     }
 
     try {
-      const response = await fetch("https://api.geniushpro.com/update-record", {
+      const response = await fetch("http://localhost:8000/v1/api/update-record", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -324,7 +277,7 @@ export const authApi = {
     }
 
     try {
-      const response = await fetch("https://api.geniushpro.com/update-record", {
+      const response = await fetch("http://localhost:8000/v1/api/update-record", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -501,48 +454,15 @@ export const authApi = {
   /**
    * Obtener el perfil del usuario autenticado desde el endpoint /v1/api/me/
    */
-  getMe: async (): Promise<UserMeData> => {
-    const token = authApi.getToken()
-
-    if (!token) {
-      throw new Error("No authentication token found")
-    }
-
-    try {
-      const response = await fetch("http://localhost:8000/v1/api/me/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
-      const responseData: UserMeResponse = await response.json()
-
-      if (!response.ok) {
-        // Manejar error con estructura: {message, error, data}
-        if (responseData.error && responseData.message) {
-          throw new Error(responseData.message)
-        }
-        throw new Error(`Error ${response.status}: ${response.statusText}`)
-      }
-
-      // Guardar el username en localStorage
-      if (responseData.data.username) {
-        localStorage.setItem(USERNAME_KEY, responseData.data.username)
-      }
-
-      return responseData.data
-    } catch (error) {
-      console.error("Get user profile error:", error)
-      throw error
-    }
-  },
 
   /**
    * Obtener el username guardado en localStorage
    */
   getUsername: (): string | null => {
     return localStorage.getItem(USERNAME_KEY)
+  },
+
+  setUsername: (username: string) => {
+    localStorage.setItem(USERNAME_KEY, username)
   },
 }

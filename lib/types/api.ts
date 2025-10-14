@@ -132,21 +132,63 @@ export interface PasswordResetConfirmResponseData {
 }
 
 /**
- * Tipos específicos para el endpoint de Me (User Profile)
+ * Tipos específicos para el endpoint de User Profile (/users/me)
  */
-export interface UserMeData {
+export interface UserProfileData {
   id: string
   username: string
+  email?: string // El endpoint de /me no devuelve el email, pero es útil tenerlo
   height: number | null
   weight: number | null
   language: "en" | "es"
   theme: "light" | "dark" | "system"
   avatar: string | null
   birth_date: string | null
-  gender: string
+  gender: "male" | "female" | "binary" | "other" | ""
   age: number | null
   is_complete: boolean
   profile_completion_percentage: number
 }
 
-export interface UserMeResponse extends ApiResponse<UserMeData> {}
+export interface UserProfileResponse extends ApiResponse<UserProfileData> {}
+
+/**
+ * Tipos específicos para el endpoint de Avatars (/avatars)
+ */
+export interface AvatarsData {
+  avatars: string[]
+}
+
+export interface AvatarsResponse extends ApiResponse<AvatarsData> {}
+
+/**
+ * Tipos específicos para el endpoint de Update Profile (/me/update/)
+ */
+export interface UpdateProfileRequestData {
+  username: string
+  height: string
+  weight: string
+  language: string
+  theme: string
+  birth_date: string // formato: "YYYY-MM-DD"
+  gender: "male" | "female" | "binary" | "other"
+}
+
+export interface UpdateProfileResponseData {
+  message: string
+}
+
+export interface UpdateProfileResponse extends ApiResponse<UpdateProfileResponseData> {}
+
+/**
+ * Tipos específicos para el endpoint de Update Avatar (/me/avatar/)
+ */
+export interface UpdateAvatarRequestData {
+  avatar: string
+}
+
+export interface UpdateAvatarResponseData {
+  message: string
+}
+
+export interface UpdateAvatarResponse extends ApiResponse<UpdateAvatarResponseData> {}

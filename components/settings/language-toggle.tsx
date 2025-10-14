@@ -4,91 +4,61 @@ import { useLanguage } from "@/lib/i18n/language-context"
 import { Globe } from "lucide-react"
 import { useEffect, useState } from "react"
 import type { Locale } from "@/lib/i18n/translations"
+import { userApi } from "@/lib/api/user"
 import { authApi } from "@/lib/api/auth"
-import { apiRequest } from "@/lib/api/api-client"
 
-interface LanguageToggleProps {
-  initialLanguage?: Locale
-}
-
-export function LanguageToggle({ initialLanguage }: LanguageToggleProps) {
+export function LanguageToggle() {
   const { locale, setLocale, t } = useLanguage()
   const [mounted, setMounted] = useState(false)
-  const [isChanging, setIsChanging] = useState(false)
-
-  // Establecer el idioma inicial cuando el componente se monta
-  useEffect(() => {
-    if (initialLanguage && !mounted && !isChanging) {
-      setLocale(initialLanguage)
-    }
-  }, [initialLanguage, setLocale, mounted, isChanging])
 
   // Avoid hydration mismatch
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  const updateLanguageInBackend = async (newLanguage: Locale) => {
-    const token = authApi.getToken()
-    const userProfile = authApi.getCachedUserProfile()
-
-    if (!token || !userProfile || !userProfile.id) {
-      console.error("Cannot update language: missing token or user profile")
-      return
+  const formatDateToAPI = (dateStr: string | null): string => {
+    if (!dateStr) return "";
+    // Si ya está en formato YYYY-MM-DD, devolverlo tal cual
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      return dateStr;
     }
-
+    // Si es un objeto Date o string de fecha, convertirlo
     try {
-      const response = await apiRequest("https://api.geniushpro.com/update-record", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          table: "users",
-          data: {
-            lenguaje: newLanguage,
-          },
-          where: {
-            id: userProfile.id,
-          },
-        }),
-      })
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return "";
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    } catch {
+      return "";
+    }
+  };
 
-      if (!response.ok) {
-        throw new Error(`Error updating language: ${response.status}`)
+  const handleLanguageChange = async (newLanguage: Locale) => {
+    // 1. Cambiar el idioma localmente primero para feedback inmediato
+    setLocale(newLanguage)
+    
+    // 2. Guardar en el backend
+    try {
+      const userProfile = authApi.getCachedUserProfile()
+      if (userProfile) {
+        await userApi.updateProfile({
+          username: userProfile.username || "",
+          height: userProfile.height?.toString() || "",
+          weight: userProfile.weight?.toString() || "",
+          language: newLanguage,
+          theme: userProfile.theme || "dark",
+          birth_date: formatDateToAPI(userProfile.birth_date),
+          gender: (userProfile.gender || "other") as "male" | "female" | "binary" | "other",
+        })
+        
+        // Actualizar cache
+        const updatedProfile = { ...userProfile, language: newLanguage }
+        localStorage.setItem("user_profile", JSON.stringify(updatedProfile))
       }
     } catch (error) {
       console.error("Error updating language:", error)
-      throw error
-    }
-  }
-
-  const handleLanguageChange = async (newLanguage: Locale) => {
-    if (isChanging) return // Prevent multiple rapid changes
-
-    setIsChanging(true)
-
-    try {
-      // 1. Change language locally first
-      setLocale(newLanguage)
-
-      // 2. Update cached profile immediately to prevent flickering
-      const userProfile = authApi.getCachedUserProfile()
-      if (userProfile) {
-        const updatedProfile = {
-          ...userProfile,
-          lenguaje: newLanguage,
-        }
-        localStorage.setItem("user_profile", JSON.stringify(updatedProfile))
-      }
-
-      // 3. Make the API request
-      await updateLanguageInBackend(newLanguage)
-    } catch (error) {
-      console.error("Failed to update language:", error)
-    } finally {
-      setIsChanging(false)
     }
   }
 
@@ -101,21 +71,25 @@ export function LanguageToggle({ initialLanguage }: LanguageToggleProps) {
       <div className="text-lg font-semibold">{t("settings.language")}</div>
       <div className="grid grid-cols-2 gap-2">
         <button
+          type="button"
           onClick={() => handleLanguageChange("en")}
-          disabled={isChanging}
-          className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-colors hover:bg-muted/50 ${
-            locale === "en" ? "border-primary bg-muted" : "border-muted"
-          } ${isChanging ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-colors ${
+            locale === "en" 
+              ? "border-neutral-500 bg-neutral-600" 
+              : "border-neutral-700 bg-neutral-800 hover:bg-neutral-700"
+          }`}
         >
           <Globe className="h-5 w-5 mb-2" />
           <span className="text-sm">English</span>
         </button>
         <button
+          type="button"
           onClick={() => handleLanguageChange("es")}
-          disabled={isChanging}
-          className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-colors hover:bg-muted/50 ${
-            locale === "es" ? "border-primary bg-muted" : "border-muted"
-          } ${isChanging ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-colors ${
+            locale === "es" 
+              ? "border-neutral-500 bg-neutral-600" 
+              : "border-neutral-700 bg-neutral-800 hover:bg-neutral-700"
+          }`}
         >
           <Globe className="h-5 w-5 mb-2" />
           <span className="text-sm">Español</span>

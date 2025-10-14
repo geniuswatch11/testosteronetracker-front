@@ -33,7 +33,7 @@ export default function BottomNav() {
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 border-t bg-neutral-600">
+    <nav className="fixed bottom-0 left-0 right-0 border-t border-border bg-card">
       <div className="mx-auto flex h-16 max-w-md items-center justify-around px-4">
         {navigation.map((item) => {
           const isActive = pathname === item.href
@@ -42,7 +42,7 @@ export default function BottomNav() {
               key={item.name}
               href={item.href}
               className={`flex flex-col items-center justify-center space-y-1 transition-colors ${
-                isActive ? "text-primary-600" : "text-neutral-400 hover:text-neutral-300"
+                isActive ? "text-primary-600" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <item.icon className="h-6 w-6" />

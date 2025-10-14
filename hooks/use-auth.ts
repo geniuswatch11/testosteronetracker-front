@@ -1,11 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { authApi, type UserProfile } from "@/lib/api/auth"
+import { authApi } from "@/lib/api/auth"
+import { userApi } from "@/lib/api/user"
+import type { UserProfileData } from "@/lib/types/api"
 import { useRouter } from "next/navigation"
 
 interface UseAuthReturn {
-  user: UserProfile | null
+  user: UserProfileData | null
   isLoading: boolean
   error: string | null
   isAuthenticated: boolean
@@ -21,7 +23,7 @@ interface UseAuthReturn {
  */
 export function useAuth(): UseAuthReturn {
   const router = useRouter()
-  const [user, setUser] = useState<UserProfile | null>(null)
+  const [user, setUser] = useState<UserProfileData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [spikeConnected, setSpikeConnected] = useState(false)
@@ -38,7 +40,7 @@ export function useAuth(): UseAuthReturn {
         return
       }
 
-      const profile = await authApi.getUserProfile()
+      const profile = await userApi.getUserProfile()
       setUser(profile)
 
       // Obtener valores de localStorage/cookies

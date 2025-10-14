@@ -4,97 +4,62 @@ import { Moon, Sun, Monitor } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/i18n/language-context"
+import { userApi } from "@/lib/api/user"
 import { authApi } from "@/lib/api/auth"
-import { apiRequest } from "@/lib/api/api-client"
 
-interface ThemeToggleProps {
-  initialTheme?: string
-}
-
-export function ThemeToggle({ initialTheme }: ThemeToggleProps) {
+export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme()
   const { t } = useLanguage()
   const [mounted, setMounted] = useState(false)
-  const [isChanging, setIsChanging] = useState(false)
-
-  // Establecer el tema inicial cuando el componente se monta
-  useEffect(() => {
-    if (initialTheme && !mounted && !isChanging) {
-      setTheme(initialTheme)
-    }
-  }, [initialTheme, setTheme, mounted, isChanging])
 
   // Avoid hydration mismatch
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  const updateThemeInBackend = async (newTheme: string) => {
-    const token = authApi.getToken()
-    const userProfile = authApi.getCachedUserProfile()
-
-    if (!token || !userProfile || !userProfile.id) {
-      console.error("Cannot update theme: missing token or user profile")
-      return
+  const formatDateToAPI = (dateStr: string | null): string => {
+    if (!dateStr) return "";
+    // Si ya está en formato YYYY-MM-DD, devolverlo tal cual
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      return dateStr;
     }
-
+    // Si es un objeto Date o string de fecha, convertirlo
     try {
-      // Convert theme format for backend
-      const backendTheme = newTheme === "light" ? "white" : newTheme
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return "";
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    } catch {
+      return "";
+    }
+  };
 
-      const response = await apiRequest("https://api.geniushpro.com/update-record", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          table: "users",
-          data: {
-            theme: backendTheme,
-          },
-          where: {
-            id: userProfile.id,
-          },
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error(`Error updating theme: ${response.status}`)
+  const handleThemeChange = async (newTheme: string) => {
+    // 1. Cambiar el tema localmente primero para feedback inmediato
+    setTheme(newTheme)
+    
+    // 2. Guardar en el backend
+    try {
+      const userProfile = authApi.getCachedUserProfile()
+      if (userProfile) {
+        await userApi.updateProfile({
+          username: userProfile.username || "",
+          height: userProfile.height?.toString() || "",
+          weight: userProfile.weight?.toString() || "",
+          language: userProfile.language || "en",
+          theme: newTheme,
+          birth_date: formatDateToAPI(userProfile.birth_date),
+          gender: (userProfile.gender || "other") as "male" | "female" | "binary" | "other",
+        })
+        
+        // Actualizar cache
+        const updatedProfile = { ...userProfile, theme: newTheme }
+        localStorage.setItem("user_profile", JSON.stringify(updatedProfile))
       }
     } catch (error) {
       console.error("Error updating theme:", error)
-      throw error
-    }
-  }
-
-  const handleThemeChange = async (newTheme: string) => {
-    if (isChanging) return // Prevent multiple rapid changes
-
-    setIsChanging(true)
-
-    try {
-      // 1. Change theme locally first
-      setTheme(newTheme)
-
-      // 2. Update cached profile immediately to prevent flickering
-      const userProfile = authApi.getCachedUserProfile()
-      if (userProfile) {
-        // Convert theme format for backend
-        const backendTheme = newTheme === "light" ? "white" : newTheme
-        const updatedProfile = {
-          ...userProfile,
-          theme: backendTheme,
-        }
-        localStorage.setItem("user_profile", JSON.stringify(updatedProfile))
-      }
-
-      // 3. Make the API request
-      await updateThemeInBackend(newTheme)
-    } catch (error) {
-      console.error("Failed to update theme:", error)
-    } finally {
-      setIsChanging(false)
     }
   }
 
@@ -110,31 +75,37 @@ export function ThemeToggle({ initialTheme }: ThemeToggleProps) {
       <div className="text-lg font-semibold">{t("settings.theme")}</div>
       <div className="grid grid-cols-3 gap-2">
         <button
+          type="button"
           onClick={() => handleThemeChange("light")}
-          disabled={isChanging}
-          className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-colors hover:bg-muted/50 ${
-            displayTheme === "light" && theme !== "system" ? "border-primary bg-muted" : "border-muted"
-          } ${isChanging ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-colors ${
+            displayTheme === "light" && theme !== "system" 
+              ? "border-neutral-500 bg-neutral-600" 
+              : "border-neutral-700 bg-neutral-800 hover:bg-neutral-700"
+          }`}
         >
           <Sun className="h-5 w-5 mb-2" />
           <span className="text-sm">{t("settings.light")}</span>
         </button>
         <button
+          type="button"
           onClick={() => handleThemeChange("dark")}
-          disabled={isChanging}
-          className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-colors hover:bg-muted/50 ${
-            displayTheme === "dark" && theme !== "system" ? "border-primary bg-muted" : "border-muted"
-          } ${isChanging ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-colors ${
+            displayTheme === "dark" && theme !== "system" 
+              ? "border-neutral-500 bg-neutral-600" 
+              : "border-neutral-700 bg-neutral-800 hover:bg-neutral-700"
+          }`}
         >
           <Moon className="h-5 w-5 mb-2" />
           <span className="text-sm">{t("settings.dark")}</span>
         </button>
         <button
+          type="button"
           onClick={() => handleThemeChange("system")}
-          disabled={isChanging}
-          className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-colors hover:bg-muted/50 ${
-            theme === "system" ? "border-primary bg-muted" : "border-muted"
-          } ${isChanging ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`flex flex-col items-center justify-center p-4 rounded-lg border transition-colors ${
+            theme === "system" 
+              ? "border-neutral-500 bg-neutral-600" 
+              : "border-neutral-700 bg-neutral-800 hover:bg-neutral-700"
+          }`}
         >
           <Monitor className="h-5 w-5 mb-2" />
           <span className="text-sm">{t("settings.system")}</span>
