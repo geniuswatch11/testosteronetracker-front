@@ -13,7 +13,7 @@ interface UseAuthReturn {
   isAuthenticated: boolean
   spikeConnected: boolean
   isComplete: boolean
-  logout: () => void
+  logout: () => Promise<void>
   refreshUser: () => Promise<void>
 }
 
@@ -57,8 +57,8 @@ export function useAuth(): UseAuthReturn {
     }
   }
 
-  const logout = () => {
-    authApi.logout()
+  const logout = async () => {
+    await authApi.logout()
     setUser(null)
     setSpikeConnected(false)
     setIsComplete(false)

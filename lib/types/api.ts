@@ -207,3 +207,79 @@ export interface ChangePasswordResponseData {
 }
 
 export interface ChangePasswordResponse extends ApiResponse<ChangePasswordResponseData> {}
+
+/**
+ * Tipos específicos para el endpoint de Spike Add Device (/spike/add/)
+ */
+export interface SpikeAddDeviceRequestData {
+  provider: string // ej: "whoop", "fitbit", etc.
+}
+
+export interface SpikeAddDeviceResponseData {
+  task_id: string
+  provider: string
+}
+
+export interface SpikeAddDeviceResponse extends ApiResponse<SpikeAddDeviceResponseData> {}
+
+/**
+ * Tipos específicos para el endpoint de Spike Task Status (/spike/status/:task_id/)
+ */
+export type SpikeTaskStatus = "PENDING" | "RETRY" | "SUCCESS" | "FAILURE"
+
+export interface SpikeTaskStatusResponseData {
+  task_id: string
+  status: SpikeTaskStatus
+}
+
+export interface SpikeTaskStatusResponse extends ApiResponse<SpikeTaskStatusResponseData> {}
+
+/**
+ * Tipos específicos para el endpoint de Spike Task Results (/spike/results/:task_id/)
+ */
+export interface SpikeTaskResultData {
+  spike_id: number
+  integration_url: string
+  provider: string
+}
+
+export interface SpikeTaskResultResponseData {
+  task_id: string
+  result: {
+    message: string
+    data: SpikeTaskResultData
+    error: string
+  }
+}
+
+export interface SpikeTaskResultResponse extends ApiResponse<SpikeTaskResultResponseData> {}
+
+/**
+ * Tipos específicos para el endpoint de Spike Consent Callback (/spike/consent-callback/)
+ */
+export interface SpikeConsentCallbackRequestData {
+  consent_given: boolean
+}
+
+export interface SpikeConsentCallbackResponseData {
+  message: string
+}
+
+export interface SpikeConsentCallbackResponse extends ApiResponse<SpikeConsentCallbackResponseData> {}
+
+/**
+ * Tipos específicos para el endpoint de Spike FAQ (/spike/faq/)
+ */
+export interface SpikeFaqRequestData {
+  alcohol?: boolean
+  drugs?: boolean
+  poor_diet?: boolean
+  attendance?: boolean
+  others?: boolean
+}
+
+export interface SpikeFaqResponseData {
+  message: string
+}
+
+export interface SpikeFaqResponse extends ApiResponse<SpikeFaqResponseData> {}

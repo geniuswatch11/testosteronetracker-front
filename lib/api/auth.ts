@@ -180,18 +180,42 @@ export const authApi = {
     }
   },
 
-  logout: () => {
-    // Eliminar el token de localStorage
+  logout: async (): Promise<void> => {
+    const token = authApi.getToken()
+    
+    // Llamar al endpoint de logout del backend
+    try {
+      if (token) {
+        await fetch("http://localhost:8000/v1/api/logout/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      }
+    } catch (error) {
+      console.error("Logout API error:", error)
+      // Continuar con la limpieza local incluso si falla el backend
+    }
+    
+    // Limpiar localStorage
     localStorage.removeItem(AUTH_TOKEN_KEY)
     localStorage.removeItem(USER_PROFILE_KEY)
     localStorage.removeItem(SPIKE_CONNECT_KEY)
     localStorage.removeItem(IS_COMPLETE_KEY)
     localStorage.removeItem(USERNAME_KEY)
+    localStorage.removeItem("user_id")
+    localStorage.removeItem("profile_id")
+    localStorage.removeItem("locale")
+    localStorage.removeItem("avatars_cache")
+    localStorage.removeItem("avatars_cache_timestamp")
 
-    // También eliminar de cookies
+    // Limpiar todas las cookies
     Cookies.remove(AUTH_TOKEN_KEY)
     Cookies.remove(SPIKE_CONNECT_KEY)
     Cookies.remove(IS_COMPLETE_KEY)
+    Cookies.remove("locale")
   },
 
   isAuthenticated: (): boolean => {
@@ -454,6 +478,46 @@ export const authApi = {
   /**
    * Obtener el perfil del usuario autenticado desde el endpoint /v1/api/me/
    */
+  getMe: async (): Promise<UserProfileData> => {
+    const token = authApi.getToken()
+    
+    if (!token) {
+      throw new Error("No authentication token found")
+    }
+
+    try {
+      const response = await fetch("http://localhost:8000/v1/api/me", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      const responseData = await response.json()
+
+      if (!response.ok) {
+        if (responseData.error && responseData.message) {
+          throw new Error(responseData.message)
+        }
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
+      }
+
+      // Guardar el perfil en localStorage
+      const profileData = responseData.data
+      localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profileData))
+      
+      // Guardar el username por separado para acceso rápido
+      if (profileData.username) {
+        localStorage.setItem(USERNAME_KEY, profileData.username)
+      }
+
+      return profileData
+    } catch (error) {
+      console.error("Get user profile error:", error)
+      throw error
+    }
+  },
 
   /**
    * Obtener el username guardado en localStorage

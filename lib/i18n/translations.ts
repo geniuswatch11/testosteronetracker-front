@@ -24,6 +24,7 @@ export const translations: Translations = {
       selectPlaceholder: "Select an option",
       cancel: "Cancel",
       select: "Select",
+      close: "Close",
     },
     auth: {
       login: "Log in",
@@ -165,6 +166,53 @@ export const translations: Translations = {
       synchronizing: "Synchronizing the data",
       preparingData: "We are preparing all the data with your next recent statistics",
     },
+    device: {
+      connection: {
+        synchronizing: "Connecting device",
+        synchronizingDescription: "Please wait while we establish the connection with your device. This may take a few moments.",
+        processing: "Processing connection",
+        processingDescription: "We are verifying the connection with your device.",
+        success: "Device connected successfully",
+        successDescription: "Your device has been connected and is ready to sync your health data.",
+        error: "Connection failed",
+        errorDescription: "We couldn't connect your device. Please try again.",
+        redirecting: "Redirecting to dashboard...",
+        maxRetriesReached: "Maximum connection attempts reached. Please try again later.",
+        failed: "Connection failed. Please try again.",
+        resultsError: "Error retrieving connection results.",
+        statusError: "Error checking connection status.",
+        initError: "Error starting device connection.",
+        disconnected: "Device disconnected successfully",
+        disconnectError: "Error disconnecting device",
+        noDeviceConnected: "No device connected",
+        tryAgain: "Please try again or contact support if the problem persists.",
+      },
+    },
+    dailyQuestions: {
+      title: "Daily Questions",
+      saved: "Answers saved successfully",
+      error: "Error saving answers",
+      alcohol: {
+        title: "Alcohol consumption",
+        description: "Do you currently consume alcohol?",
+      },
+      drugs: {
+        title: "Drug use",
+        description: "Do you use recreational drugs?",
+      },
+      poorDiet: {
+        title: "Other health factors",
+        description: "Do you have any other conditions (e.g., diabetes, varicocele)?",
+      },
+      attendance: {
+        title: "Testosterone therapy attendance",
+        description: "Are you attending testosterone therapy sessions?",
+      },
+      others: {
+        title: "Other factors",
+        description: "Any other factors affecting your health?",
+      },
+    },
     store: {
       title: "Store",
       subtitle: "These are some of the partners we work with",
@@ -248,6 +296,7 @@ export const translations: Translations = {
       selectPlaceholder: "Selecciona una opción",
       cancel: "Cancelar",
       select: "Seleccionar",
+      close: "Cerrar",
     },
     auth: {
       login: "Iniciar sesión",
@@ -388,6 +437,53 @@ export const translations: Translations = {
     loading: {
       synchronizing: "Sincronizando los datos",
       preparingData: "Estamos preparando todos los datos con tus próximas estadísticas recientes",
+    },
+    device: {
+      connection: {
+        synchronizing: "Conectando dispositivo",
+        synchronizingDescription: "Por favor espera mientras establecemos la conexión con tu dispositivo. Esto puede tomar unos momentos.",
+        processing: "Procesando conexión",
+        processingDescription: "Estamos verificando la conexión con tu dispositivo.",
+        success: "Dispositivo conectado exitosamente",
+        successDescription: "Tu dispositivo ha sido conectado y está listo para sincronizar tus datos de salud.",
+        error: "Conexión fallida",
+        errorDescription: "No pudimos conectar tu dispositivo. Por favor intenta de nuevo.",
+        redirecting: "Redirigiendo al dashboard...",
+        maxRetriesReached: "Se alcanzó el máximo de intentos de conexión. Por favor intenta más tarde.",
+        failed: "Conexión fallida. Por favor intenta de nuevo.",
+        resultsError: "Error al obtener los resultados de la conexión.",
+        statusError: "Error al verificar el estado de la conexión.",
+        initError: "Error al iniciar la conexión del dispositivo.",
+        disconnected: "Dispositivo desconectado exitosamente",
+        disconnectError: "Error al desconectar el dispositivo",
+        noDeviceConnected: "No hay dispositivo conectado",
+        tryAgain: "Por favor intenta de nuevo o contacta a soporte si el problema persiste.",
+      },
+    },
+    dailyQuestions: {
+      title: "Preguntas Diarias",
+      saved: "Respuestas guardadas exitosamente",
+      error: "Error al guardar las respuestas",
+      alcohol: {
+        title: "Consumo de alcohol",
+        description: "¿Consumes alcohol actualmente?",
+      },
+      drugs: {
+        title: "Uso de drogas",
+        description: "¿Usas drogas recreacionales?",
+      },
+      poorDiet: {
+        title: "Otros factores de salud",
+        description: "¿Tienes alguna otra condición (ej: diabetes, varicocele)?",
+      },
+      attendance: {
+        title: "Asistencia a terapia de testosterona",
+        description: "¿Estás asistiendo a sesiones de terapia de testosterona?",
+      },
+      others: {
+        title: "Otros factores",
+        description: "¿Algún otro factor que afecte tu salud?",
+      },
     },
     store: {
       title: "Tienda",

@@ -13,12 +13,14 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import ModernDatePicker from "@/components/settings/modern-date-picker"
+import DeviceModal from "@/components/settings/device-modal"
 // comentario-dev: import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageToggle } from "@/components/settings/language-toggle"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { useAuth } from "@/hooks/use-auth"
 import { userApi } from "@/lib/api/user"
 import { authApi } from "@/lib/api/auth"
+import { spikeApi } from "@/lib/api/spike"
 import type { UserProfileData } from "@/lib/types/api"
 
 const settingsSchema = yup.object({
@@ -55,7 +57,14 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
   const { logout } = useAuth();
   const [selectedAvatar, setSelectedAvatar] = useState(userProfile?.avatar || avatars[0] || "");
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
+  
+  // Estado de conexión del dispositivo
+  const [isDeviceConnected, setIsDeviceConnected] = useState(false);
+  const [connectedProvider, setConnectedProvider] = useState<string>("");
+  const [spikeId, setSpikeId] = useState<number | null>(null);
 
   const { control, handleSubmit, setValue, watch, reset, setError, formState: { errors, dirtyFields } } = 
   useForm<SettingsFormData>({
@@ -96,6 +105,17 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
       }
     }
   }, [userProfile]);
+
+  // Verificar estado de conexión del dispositivo
+  useEffect(() => {
+    const spikeConnect = localStorage.getItem("spike_connect") === "true";
+    const provider = localStorage.getItem("spike_provider") || "";
+    const storedSpikeId = localStorage.getItem("spike_id");
+    
+    setIsDeviceConnected(spikeConnect);
+    setConnectedProvider(provider);
+    setSpikeId(storedSpikeId ? parseInt(storedSpikeId) : null);
+  }, []);
 
   // Helper para formatear fecha a YYYY-MM-DD
   const formatDateToAPI = (date: Date | null | undefined): string => {
@@ -205,6 +225,53 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
     // Marcar el campo como dirty para que se detecte el cambio
     setValue("avatar", avatarUrl, { shouldDirty: true });
     setIsAvatarModalOpen(false);
+  };
+
+  const handleDeviceSelect = (deviceName: string) => {
+    console.log("Device selected:", deviceName);
+    // El DeviceModal maneja toda la lógica de conexión internamente
+  };
+
+  const handleDisconnectDevice = async () => {
+    if (!spikeId) {
+      toast.error(t("device.connection.noDeviceConnected"));
+      return;
+    }
+
+    setIsDisconnecting(true);
+    try {
+      await spikeApi.deleteDevice(spikeId);
+      
+      // Limpiar localStorage
+      localStorage.removeItem("spike_connect");
+      localStorage.removeItem("spike_provider");
+      localStorage.removeItem("spike_id");
+      
+      // Actualizar el perfil del usuario en caché
+      const cachedUser = localStorage.getItem("userProfile");
+      if (cachedUser) {
+        const userProfile = JSON.parse(cachedUser);
+        userProfile.spike_connect = false;
+        localStorage.setItem("userProfile", JSON.stringify(userProfile));
+      }
+      
+      // Actualizar estados
+      setIsDeviceConnected(false);
+      setConnectedProvider("");
+      setSpikeId(null);
+      
+      toast.success(t("device.connection.disconnected"));
+      
+      // Refrescar el perfil si hay callback
+      if (onProfileUpdated) {
+        await onProfileUpdated();
+      }
+    } catch (error) {
+      console.error("Error disconnecting device:", error);
+      toast.error(t("device.connection.disconnectError"));
+    } finally {
+      setIsDisconnecting(false);
+    }
   };
 
   return (
@@ -321,10 +388,47 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
       {/* Connections Section */}
       <div className="space-y-4">
         <h3 className="font-semibold">{t("settings.connections.title")}</h3>
-        <button type="button" className="w-full text-left bg-neutral-800 p-4 rounded-lg hover:bg-neutral-700 transition-colors">
-          {t("settings.connections.selectDevice")}
-        </button>
+        
+        {isDeviceConnected ? (
+          <div className="space-y-3">
+            <div className="bg-neutral-800 p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-neutral-400">{t("settings.device")}</p>
+                  <p className="font-medium capitalize">{connectedProvider || "Connected"}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-primary-600 animate-pulse"></div>
+                  <span className="text-xs text-primary-600">{t("settings.deviceConnected")}</span>
+                </div>
+              </div>
+            </div>
+            <button 
+              type="button" 
+              onClick={handleDisconnectDevice}
+              disabled={isDisconnecting}
+              className="w-full bg-danger-600 hover:bg-danger-500 text-white p-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isDisconnecting ? t("common.loading") : t("settings.deviceDisconnect")}
+            </button>
+          </div>
+        ) : (
+          <button 
+            type="button" 
+            onClick={() => setIsDeviceModalOpen(true)}
+            className="w-full text-left bg-neutral-800 p-4 rounded-lg hover:bg-neutral-700 transition-colors"
+          >
+            {t("settings.connections.selectDevice")}
+          </button>
+        )}
       </div>
+
+      {/* Device Modal */}
+      <DeviceModal
+        isOpen={isDeviceModalOpen}
+        onClose={() => setIsDeviceModalOpen(false)}
+        onSelectDevice={handleDeviceSelect}
+      />
 
       {/* Theme and Language */}
       <div className="space-y-6">

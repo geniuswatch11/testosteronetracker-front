@@ -2,11 +2,15 @@
 
 import { X } from "lucide-react"
 import { useEffect, useRef } from "react"
+import Image from "next/image"
 import { useLanguage } from "@/lib/i18n/language-context"
+import { useDeviceConnection } from "@/hooks/use-device-connection"
+import toast from "react-hot-toast"
 
 interface DeviceOption {
   name: string
-  icon: string
+  icon: string // Ruta al icono en /public/devices
+  provider: string // Identificador del proveedor para la API
 }
 
 interface DeviceModalProps {
@@ -16,28 +20,17 @@ interface DeviceModalProps {
 }
 
 const deviceOptions: DeviceOption[] = [
-  { name: "Fitbit", icon: "activity" },
-  { name: "Apple HealthKit", icon: "heart" },
-  { name: "Google Fit", icon: "activity" },
-  { name: "Garmin", icon: "watch" },
-  { name: "Oura", icon: "circle" },
-  { name: "Polar", icon: "heart-pulse" },
-  { name: "Samsung Health", icon: "heart" },
-  { name: "Huawei Health", icon: "activity" },
-  { name: "Xiaomi", icon: "watch" },
-  { name: "Amazon Kindle", icon: "book" },
-  { name: "Peloton", icon: "bike" },
-  { name: "Tesla", icon: "car" },
-  { name: "WearOS", icon: "watch" },
-  { name: "!Health", icon: "activity" },
-  { name: "Zwift", icon: "bike" },
-  { name: "Google Nest", icon: "home" },
-  { name: "Whoop", icon: "activity" },
+  { name: "Apple HealthKit", icon: "/devices/apple.png", provider: "apple" },
+  { name: "Fitbit", icon: "/devices/fitbit.png", provider: "fitbit" },
+  { name: "Garmin", icon: "/devices/garmin.png", provider: "garmin" },
+  { name: "Google Fit", icon: "/devices/google-heat.png", provider: "google_fit" },
+  { name: "Whoop", icon: "/devices/whoop.png", provider: "whoop" },
 ]
 
 export default function DeviceModal({ isOpen, onClose, onSelectDevice }: DeviceModalProps) {
   const { t } = useLanguage()
   const modalRef = useRef<HTMLDivElement>(null)
+  const { isLoading, error, connectDevice, resetConnection } = useDeviceConnection()
 
   // Close modal when clicking outside
   useEffect(() => {
@@ -47,7 +40,7 @@ export default function DeviceModal({ isOpen, onClose, onSelectDevice }: DeviceM
       }
     }
 
-    if (isOpen) {
+    if (isOpen && !isLoading) {
       document.addEventListener("mousedown", handleClickOutside)
       // Prevent scrolling of the body when modal is open
       document.body.style.overflow = "hidden"
@@ -58,12 +51,12 @@ export default function DeviceModal({ isOpen, onClose, onSelectDevice }: DeviceM
       // Restore scrolling when modal is closed
       document.body.style.overflow = "auto"
     }
-  }, [isOpen, onClose])
+  }, [isOpen, onClose, isLoading])
 
   // Handle escape key press
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape" && !isLoading) {
         onClose()
       }
     }
@@ -75,13 +68,31 @@ export default function DeviceModal({ isOpen, onClose, onSelectDevice }: DeviceM
     return () => {
       document.removeEventListener("keydown", handleEscKey)
     }
-  }, [isOpen, onClose])
+  }, [isOpen, onClose, isLoading])
+
+  // Manejar errores
+  useEffect(() => {
+    if (error) {
+      toast.error(t(error) || error)
+      resetConnection()
+      onClose()
+    }
+  }, [error, t, resetConnection, onClose])
 
   if (!isOpen) return null
 
-  const handleDeviceClick = (deviceName: string) => {
-    onSelectDevice(deviceName)
-    onClose()
+  const handleDeviceClick = async (device: DeviceOption) => {
+    onSelectDevice(device.name)
+    
+    try {
+      // Iniciar el proceso de conexión (redirigirá a /synchronizing)
+      await connectDevice(device.provider)
+      // Cerrar el modal después de iniciar la conexión
+      onClose()
+    } catch (err) {
+      // Los errores se manejan en el useEffect
+      console.error("Error connecting device:", err)
+    }
   }
 
   return (
@@ -99,13 +110,19 @@ export default function DeviceModal({ isOpen, onClose, onSelectDevice }: DeviceM
             {deviceOptions.map((device) => (
               <button
                 key={device.name}
-                onClick={() => handleDeviceClick(device.name)}
-                className="flex flex-col items-center justify-center p-4 rounded-lg border hover:bg-muted/50 transition-colors h-24"
+                onClick={() => handleDeviceClick(device)}
+                className="flex flex-col items-center justify-center p-6 rounded-lg border border-neutral-700 hover:border-primary-600 hover:bg-neutral-800/50 transition-all h-32 group"
               >
-                <div className="h-10 flex items-center justify-center mb-2">
-                  <span className="text-2xl">{getDeviceIcon(device.icon)}</span>
+                <div className="h-14 w-14 flex items-center justify-center mb-3 relative">
+                  <Image
+                    src={device.icon}
+                    alt={device.name}
+                    width={56}
+                    height={56}
+                    className="object-contain group-hover:scale-110 transition-transform"
+                  />
                 </div>
-                <span className="text-sm text-center">{device.name}</span>
+                <span className="text-sm text-center font-medium">{device.name}</span>
               </button>
             ))}
           </div>
@@ -113,30 +130,4 @@ export default function DeviceModal({ isOpen, onClose, onSelectDevice }: DeviceM
       </div>
     </div>
   )
-}
-
-// Helper function to get emoji for device icons
-function getDeviceIcon(iconName: string): string {
-  switch (iconName) {
-    case "activity":
-      return "⌚️"
-    case "heart":
-      return "❤️"
-    case "watch":
-      return "⌚"
-    case "circle":
-      return "⭕"
-    case "heart-pulse":
-      return "💓"
-    case "book":
-      return "📚"
-    case "bike":
-      return "🚴"
-    case "car":
-      return "🚗"
-    case "home":
-      return "🏠"
-    default:
-      return "📱"
-  }
 }
