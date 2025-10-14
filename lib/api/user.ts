@@ -9,6 +9,8 @@ import type {
   UpdateProfileResponse,
   UpdateAvatarRequestData,
   UpdateAvatarResponse,
+  ChangePasswordRequestData,
+  ChangePasswordResponse,
 } from "@/lib/types/api"
 
 export const userApi = {
@@ -75,7 +77,7 @@ export const userApi = {
 
     const data: any = await response.json()
 
-    if (response.ok && data.data !== null) {
+    if (response.ok && data.error === "") {
       return data.message
     } else {
       // Lanzar error con toda la información de respuesta para manejo correcto
@@ -111,6 +113,37 @@ export const userApi = {
       return data.message
     } else {
       throw new Error(data.message || "Error updating avatar")
+    }
+  },
+
+  /**
+   * Cambiar la contraseña del usuario autenticado
+   * Endpoint: POST /v1/api/me/change-password/
+   */
+  changePassword: async (passwordData: ChangePasswordRequestData): Promise<string> => {
+    const token = authApi.getToken()
+
+    const response = await apiRequest("http://localhost:8000/v1/api/me/change-password/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(passwordData),
+    })
+
+    const data: any = await response.json()
+
+    if (response.ok && data.error === "") {
+      return data.message
+    } else {
+      // Lanzar error con toda la información de respuesta para manejo correcto
+      const error: any = new Error(data.message || "Error changing password")
+      error.response = {
+        status: response.status,
+        data: data
+      }
+      throw error
     }
   },
 }

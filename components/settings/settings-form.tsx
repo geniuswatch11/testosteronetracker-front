@@ -236,7 +236,7 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
             <Label className="text-sm font-medium text-neutral-300">{t("settings.password")}</Label>
             <button
               type="button"
-              onClick={() => router.push('/coming-soon')}
+              onClick={() => router.push('/settings/change-password')}
               className="text-sm text-white underline hover:text-neutral-300 transition-colors"
             >
               {t("settings.changePassword")}

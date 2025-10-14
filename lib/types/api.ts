@@ -192,3 +192,17 @@ export interface UpdateAvatarResponseData {
 }
 
 export interface UpdateAvatarResponse extends ApiResponse<UpdateAvatarResponseData> {}
+
+/**
+ * Tipos específicos para el endpoint de Change Password (/me/change-password/)
+ */
+export interface ChangePasswordRequestData {
+  password: string
+  confirm_password: string
+}
+
+export interface ChangePasswordResponseData {
+  message: string
+}
+
+export interface ChangePasswordResponse extends ApiResponse<ChangePasswordResponseData> {}
