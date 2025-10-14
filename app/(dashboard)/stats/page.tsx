@@ -9,6 +9,8 @@ import { SleepDurationLineChart } from "@/components/stats/sleep-duration-line-c
 import { SleepInterruptionsLineChart } from "@/components/stats/sleep-interruptions-line-chart"
 import { HeartRateRestingBarChart } from "@/components/stats/heartrate-resting-bar-chart"
 import { Spo2LineChart } from "@/components/stats/spo2-line-chart"
+import { ConfigurationSetup } from "@/components/dashboard/configuration-setup"
+import { useAuth } from "@/hooks"
 
 /**
  * Stats Page - Muestra gráficos de estadísticas de salud
@@ -16,9 +18,15 @@ import { Spo2LineChart } from "@/components/stats/spo2-line-chart"
  * Cada sección tiene su propio filtro de período independiente
  */
 export default function StatsPage() {
+  const { spikeConnected, isComplete } = useAuth()
   const [sleepPeriod, setSleepPeriod] = useState("1w")
   const [recoveryPeriod, setRecoveryPeriod] = useState("1w")
   const [activityPeriod, setActivityPeriod] = useState("3w")
+
+  // Si el dispositivo no está conectado, mostrar ConfigurationSetup
+  if (!spikeConnected) {
+    return <ConfigurationSetup spikeConnected={spikeConnected} isComplete={isComplete} />
+  }
 
   return (
     <div className="min-h-screen bg-black px-6 py-8">

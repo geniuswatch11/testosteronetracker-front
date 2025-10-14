@@ -1,8 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { ThemeProvider } from "@/components/theme-provider"
-import { ThemeScript } from "@/components/theme-script"
 import { LanguageProvider } from "@/lib/i18n/language-context"
 import { Toaster } from "react-hot-toast"
 import "./globals.css"
@@ -21,17 +19,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <ThemeScript />
-      </head>
-      <body className={`${inter.className} min-h-screen bg-background transition-colors`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <LanguageProvider>
-            <Toaster position="top-center" />
-            {children}
-          </LanguageProvider>
-        </ThemeProvider>
+    <html lang="en" className="dark">
+      <body className={`${inter.className} min-h-screen bg-black transition-colors`}>
+        <LanguageProvider>
+          <Toaster position="top-center" />
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   )

@@ -3,7 +3,6 @@
 import type React from "react"
 import BottomNav from "@/components/navigation/bottom-nav"
 import AuthGuard from "@/components/auth/auth-guard"
-import { ThemeInitializer } from "@/components/theme-initializer"
 import DailyQuestionsModal from "@/components/dashboard/daily-questions-modal"
 import { useDailyQuestions } from "@/hooks/use-daily-questions"
 
@@ -16,8 +15,7 @@ export default function DashboardLayout({
 
   return (
     <AuthGuard>
-      <ThemeInitializer />
-      <div className="min-h-screen bg-background text-foreground pb-16">
+      <div className="min-h-screen bg-black text-white pb-16">
         {children}
         <BottomNav />
         <DailyQuestionsModal

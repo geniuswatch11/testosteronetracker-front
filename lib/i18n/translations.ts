@@ -102,7 +102,6 @@ export const translations: Translations = {
     },
     settings: {
       personalData: "Personal Data",
-      theme: "Theme",
       language: "Language",
       weight: "Weight",
       height: "Height",
@@ -122,9 +121,6 @@ export const translations: Translations = {
       whoopConnect: "Connect your Whoop account to sync data",
       whoopConnected: "Connected to Whoop",
       whoopDisconnect: "Disconnect Whoop",
-      light: "Light",
-      dark: "Dark",
-      system: "System",
       changeDevice: "Change or add another device",
       user: "Username",
       email: "Email",
@@ -133,7 +129,6 @@ export const translations: Translations = {
       gender: "Gender",
       faqs: "FAQs",
       appSettings: {
-        theme: "Theme",
         language: "Language",
       },
       connections: {
@@ -376,7 +371,6 @@ export const translations: Translations = {
     },
     settings: {
       personalData: "Datos Personales",
-      theme: "Tema",
       language: "Idioma",
       weight: "Peso",
       height: "Altura",
@@ -396,9 +390,6 @@ export const translations: Translations = {
       whoopConnect: "Conecta tu cuenta de Whoop para sincronizar datos",
       whoopConnected: "Conectado a Whoop",
       whoopDisconnect: "Desconectar Whoop",
-      light: "Claro",
-      dark: "Oscuro",
-      system: "Sistema",
       changeDevice: "Cambiar o añadir otro dispositivo",
       user: "Nombre de usuario",
       email: "Correo electrónico",
@@ -407,7 +398,6 @@ export const translations: Translations = {
       gender: "Género",
       faqs: "Preguntas Frecuentes",
       appSettings: {
-        theme: "Tema",
         language: "Idioma",
       },
       connections: {

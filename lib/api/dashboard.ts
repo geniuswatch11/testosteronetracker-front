@@ -32,6 +32,23 @@ export const dashboardApi = {
         },
       })
 
+      // Manejar errores HTTP 404 y 400
+      if (response.status === 404) {
+        return {
+          message: "Los datos aún no están disponibles. Estamos sincronizando tu información.",
+          error: "not_found",
+          data: null,
+        } as ApiErrorResponse
+      }
+
+      if (response.status === 400) {
+        return {
+          message: "Error al procesar los datos. Estamos trabajando en sincronizarlos.",
+          error: "bad_request",
+          data: null,
+        } as ApiErrorResponse
+      }
+
       // Status 304 (Not Modified) no tiene body, retornar error controlado
       if (response.status === 304) {
         return {
@@ -83,6 +100,23 @@ export const dashboardApi = {
           Authorization: `Bearer ${token}`,
         },
       })
+
+      // Manejar errores HTTP 404 y 400
+      if (response.status === 404) {
+        return {
+          message: "Las métricas aún no están disponibles. Estamos sincronizando tu información.",
+          error: "not_found",
+          data: null,
+        } as ApiErrorResponse
+      }
+
+      if (response.status === 400) {
+        return {
+          message: "Error al procesar las métricas. Estamos trabajando en sincronizarlas.",
+          error: "bad_request",
+          data: null,
+        } as ApiErrorResponse
+      }
 
       // Status 304 (Not Modified) no tiene body, retornar error controlado
       if (response.status === 304) {

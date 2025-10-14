@@ -141,7 +141,6 @@ export interface UserProfileData {
   height: number | null
   weight: number | null
   language: "en" | "es"
-  theme: "light" | "dark" | "system"
   avatar: string | null
   birth_date: string | null
   gender: "male" | "female" | "binary" | "other" | ""
@@ -170,7 +169,6 @@ export interface UpdateProfileRequestData {
   height?: string
   weight?: string
   language?: string
-  theme?: string
   birth_date?: string // formato: "YYYY-MM-DD"
   gender?: "male" | "female" | "binary" | "other"
 }

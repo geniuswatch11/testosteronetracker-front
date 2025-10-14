@@ -5,6 +5,7 @@ import { format } from "date-fns"
 import { Activity, Moon, Heart } from "lucide-react"
 import { InitializingLoader } from "@/components/dashboard/initializing-loader"
 import { ConfigurationSetup } from "@/components/dashboard/configuration-setup"
+import { SynchronizingLoading } from "@/components/ui/synchronizing-loading"
 import { PageHeader } from "@/components/layout/page-header"
 import { EnergyLevelGauge } from "@/components/dashboard/energy-level-gauge"
 import { MetricCard } from "@/components/dashboard/metric-card"
@@ -14,6 +15,7 @@ import { SleepInterruptionsChart } from "@/components/dashboard/sleep-interrupti
 import { Spo2Chart } from "@/components/dashboard/spo2-chart"
 import { useAuth } from "@/hooks"
 import { dashboardApi } from "@/lib/api/dashboard"
+import toast from "react-hot-toast"
 import type {
   EnergyLevelsResponse,
   BasicMetricsApiResponse,
@@ -34,6 +36,7 @@ export default function DashboardPage() {
   const [energyData, setEnergyData] = useState<EnergyLevelsResponse | null>(null)
   const [metricsData, setMetricsData] = useState<BasicMetricsApiResponse | null>(null)
   const [errorMessage, setErrorMessage] = useState<string>("")
+  const [showSyncPage, setShowSyncPage] = useState(false)
   const [startDate, setStartDate] = useState<string | null>(null)
   const [endDate, setEndDate] = useState<string | null>(null)
 
@@ -49,6 +52,7 @@ export default function DashboardPage() {
       if (spikeConnected && isComplete && !isLoading) {
         setIsLoadingData(true)
         setErrorMessage("")
+        setShowSyncPage(false)
 
         try {
           // Llamar a ambos endpoints en paralelo
@@ -57,23 +61,53 @@ export default function DashboardPage() {
             dashboardApi.getBasicMetrics(),
           ])
 
-          // Verificar si hay errores
+          // Verificar si hay errores en energy levels
           if ("error" in energyResponse && energyResponse.error !== "") {
             const errorResponse = energyResponse as ApiErrorResponse
-            setErrorMessage(errorResponse.message || "Error al obtener los niveles de energía")
+            const errorMsg = errorResponse.message || "Error al obtener los niveles de energía"
+            
+            // Si es 404 o 400, mostrar página de sincronización
+            if (errorResponse.error === "not_found" || errorResponse.error === "bad_request") {
+              setShowSyncPage(true)
+              toast.error(errorMsg, {
+                duration: 5000,
+                position: "top-center",
+              })
+            } else {
+              setErrorMessage(errorMsg)
+            }
           } else {
             setEnergyData(energyResponse as EnergyLevelsResponse)
           }
 
+          // Verificar si hay errores en metrics
           if ("error" in metricsResponse && metricsResponse.error !== "") {
             const errorResponse = metricsResponse as ApiErrorResponse
-            setErrorMessage(errorResponse.message || "Error al obtener las métricas básicas")
+            const errorMsg = errorResponse.message || "Error al obtener las métricas básicas"
+            
+            // Si es 404 o 400, mostrar página de sincronización
+            if (errorResponse.error === "not_found" || errorResponse.error === "bad_request") {
+              setShowSyncPage(true)
+              toast.error(errorMsg, {
+                duration: 5000,
+                position: "top-center",
+              })
+            } else {
+              setErrorMessage(errorMsg)
+            }
           } else {
             setMetricsData(metricsResponse as BasicMetricsApiResponse)
           }
         } catch (error) {
           console.error("Error fetching dashboard data:", error)
-          setErrorMessage("Error al conectar con el servidor")
+          
+          // Si hay un error de red o servidor, mostrar página de sincronización
+          const errorMsg = "Error al conectar con el servidor. Los datos pueden estar sincronizándose."
+          setShowSyncPage(true)
+          toast.error(errorMsg, {
+            duration: 5000,
+            position: "top-center",
+          })
         } finally {
           setIsLoadingData(false)
         }
@@ -91,6 +125,16 @@ export default function DashboardPage() {
   // Si no están ambos completos, mostrar Configuration Setup
   if (!spikeConnected || !isComplete) {
     return <ConfigurationSetup spikeConnected={spikeConnected} isComplete={isComplete} />
+  }
+
+  // Si se debe mostrar la página de sincronización (error 404 o 400)
+  if (showSyncPage) {
+    return (
+      <SynchronizingLoading
+        title="Sincronizando datos"
+        description="Estamos procesando tus datos de salud. Esto puede tomar varios segundos. Por favor, espera..."
+      />
+    )
   }
 
   // Si hay error, mostrar mensaje

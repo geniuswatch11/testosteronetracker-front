@@ -173,7 +173,13 @@ export const spikeApi = {
       return result
     }
 
-    // Manejar errores (404 significa que no hay dispositivo conectado)
+    // Manejar errores (404 significa que no hay dispositivo conectado - esto es esperado)
+    if (response.status === 404) {
+      console.log("ℹ️ [SPIKE API] getMyDevice - No hay dispositivo conectado (404)")
+      throw new Error("No device connected")
+    }
+
+    // Para otros errores, mostrar el detalle
     const errorData: ApiErrorResponse = await response.json()
     console.error("🔷 [SPIKE API] getMyDevice - Error:", errorData)
     throw new Error(errorData.message || "Error getting device information")
