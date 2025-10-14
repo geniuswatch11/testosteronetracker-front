@@ -16,49 +16,26 @@ export function LanguageToggle() {
     setMounted(true)
   }, [])
 
-  const formatDateToAPI = (dateStr: string | null): string => {
-    if (!dateStr) return "";
-    // Si ya está en formato YYYY-MM-DD, devolverlo tal cual
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-      return dateStr;
-    }
-    // Si es un objeto Date o string de fecha, convertirlo
-    try {
-      const date = new Date(dateStr);
-      if (isNaN(date.getTime())) return "";
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    } catch {
-      return "";
-    }
-  };
-
   const handleLanguageChange = async (newLanguage: Locale) => {
     // 1. Cambiar el idioma localmente primero para feedback inmediato
     setLocale(newLanguage)
     
-    // 2. Guardar en el backend
+    // 2. Guardar en el backend (solo el campo language)
     try {
+      await userApi.updateProfile({
+        language: newLanguage,
+      })
+      
+      // 3. Actualizar el cache del perfil de usuario
       const userProfile = authApi.getCachedUserProfile()
       if (userProfile) {
-        await userApi.updateProfile({
-          username: userProfile.username || "",
-          height: userProfile.height?.toString() || "",
-          weight: userProfile.weight?.toString() || "",
-          language: newLanguage,
-          theme: userProfile.theme || "dark",
-          birth_date: formatDateToAPI(userProfile.birth_date),
-          gender: (userProfile.gender || "other") as "male" | "female" | "binary" | "other",
-        })
-        
-        // Actualizar cache
         const updatedProfile = { ...userProfile, language: newLanguage }
         localStorage.setItem("user_profile", JSON.stringify(updatedProfile))
       }
     } catch (error) {
       console.error("Error updating language:", error)
+      // Si falla el backend, el cambio local ya se aplicó
+      // La cookie/localStorage ya se actualizó en setLocale
     }
   }
 

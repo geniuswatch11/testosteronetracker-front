@@ -163,15 +163,16 @@ export interface AvatarsResponse extends ApiResponse<AvatarsData> {}
 
 /**
  * Tipos específicos para el endpoint de Update Profile (/me/update/)
+ * Todos los campos son opcionales para permitir actualizaciones parciales
  */
 export interface UpdateProfileRequestData {
-  username: string
-  height: string
-  weight: string
-  language: string
-  theme: string
-  birth_date: string // formato: "YYYY-MM-DD"
-  gender: "male" | "female" | "binary" | "other"
+  username?: string
+  height?: string
+  weight?: string
+  language?: string
+  theme?: string
+  birth_date?: string // formato: "YYYY-MM-DD"
+  gender?: "male" | "female" | "binary" | "other"
 }
 
 export interface UpdateProfileResponseData {
