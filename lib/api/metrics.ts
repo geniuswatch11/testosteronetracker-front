@@ -89,8 +89,8 @@ export const metricsApi = {
         return {
           message: "Datos obtenidos del caché",
           error: "",
-          data: { data: [] },
-        } as CaloriesStatsResponse
+          data: [],
+        }
       }
 
       const data = await response.json()
@@ -99,7 +99,7 @@ export const metricsApi = {
         return data as ApiErrorResponse
       }
 
-      return data as CaloriesStatsResponse
+      return data
     } catch (error) {
       console.error("Error fetching calories stats:", error)
       throw error
@@ -132,8 +132,8 @@ export const metricsApi = {
         return {
           message: "Datos obtenidos del caché",
           error: "",
-          data: { data: [] },
-        } as HeartRateStatsResponse
+          data: [],
+        }
       }
 
       const data = await response.json()
@@ -142,7 +142,7 @@ export const metricsApi = {
         return data as ApiErrorResponse
       }
 
-      return data as HeartRateStatsResponse
+      return data
     } catch (error) {
       console.error("Error fetching heart rate stats:", error)
       throw error
@@ -175,8 +175,8 @@ export const metricsApi = {
         return {
           message: "Datos obtenidos del caché",
           error: "",
-          data: { data: [] },
-        } as SleepDurationStatsResponse
+          data: [],
+        }
       }
 
       const data = await response.json()
@@ -185,7 +185,7 @@ export const metricsApi = {
         return data as ApiErrorResponse
       }
 
-      return data as SleepDurationStatsResponse
+      return data
     } catch (error) {
       console.error("Error fetching sleep duration stats:", error)
       throw error
@@ -218,8 +218,8 @@ export const metricsApi = {
         return {
           message: "Datos obtenidos del caché",
           error: "",
-          data: { data: [] },
-        } as SleepEfficiencyStatsResponse
+          data: [],
+        }
       }
 
       const data = await response.json()
@@ -228,7 +228,7 @@ export const metricsApi = {
         return data as ApiErrorResponse
       }
 
-      return data as SleepEfficiencyStatsResponse
+      return data
     } catch (error) {
       console.error("Error fetching sleep efficiency stats:", error)
       throw error
@@ -261,8 +261,8 @@ export const metricsApi = {
         return {
           message: "Datos obtenidos del caché",
           error: "",
-          data: { data: [] },
-        } as SleepInterruptionsStatsResponse
+          data: [],
+        }
       }
 
       const data = await response.json()
@@ -271,7 +271,7 @@ export const metricsApi = {
         return data as ApiErrorResponse
       }
 
-      return data as SleepInterruptionsStatsResponse
+      return data
     } catch (error) {
       console.error("Error fetching sleep interruptions stats:", error)
       throw error
@@ -304,8 +304,8 @@ export const metricsApi = {
         return {
           message: "Datos obtenidos del caché",
           error: "",
-          data: { data: [] },
-        } as Spo2StatsResponse
+          data: [],
+        }
       }
 
       const data = await response.json()
@@ -314,7 +314,7 @@ export const metricsApi = {
         return data as ApiErrorResponse
       }
 
-      return data as Spo2StatsResponse
+      return data
     } catch (error) {
       console.error("Error fetching SpO2 stats:", error)
       throw error

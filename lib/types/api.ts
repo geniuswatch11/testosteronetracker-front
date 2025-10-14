@@ -319,27 +319,96 @@ export interface BasicMetricsResponse extends ApiResponse<BasicMetricsData> {}
 
 /**
  * Tipos específicos para los endpoints de Stats
+ * Basados en las respuestas reales del backend
  */
-export interface StatsDataPoint {
+
+// Calorías
+export interface CaloriesDataPoint {
   date: string
-  value: number
+  calories_burned: number
+  day_index: number
 }
 
-/**
- * Respuesta de stats - el data contiene directamente el array de puntos
- */
-export interface StatsResponseData {
-  data: StatsDataPoint[]
+export interface CaloriesStatsData {
+  message: string
+  error: string
+  data: CaloriesDataPoint[]
 }
 
-export interface StatsResponse extends ApiResponse<StatsResponseData> {}
+// Frecuencia Cardíaca
+export interface HeartRateDataPoint {
+  date: string
+  heartrate: number
+  heartrate_resting: number
+  heartrate_max: number
+  hrv_rmssd: number
+  day_index: number
+}
 
-/**
- * Tipos específicos para cada endpoint de stats
- */
-export interface CaloriesStatsResponse extends StatsResponse {}
-export interface HeartRateStatsResponse extends StatsResponse {}
-export interface SleepDurationStatsResponse extends StatsResponse {}
-export interface SleepEfficiencyStatsResponse extends StatsResponse {}
-export interface SleepInterruptionsStatsResponse extends StatsResponse {}
-export interface Spo2StatsResponse extends StatsResponse {}
+export interface HeartRateStatsData {
+  message: string
+  error: string
+  data: HeartRateDataPoint[]
+}
+
+// Duración del Sueño
+export interface SleepDurationDataPoint {
+  date: string
+  sleep_duration: number
+  sleep_duration_deep: number
+  sleep_duration_rem: number
+  day_index: number
+}
+
+export interface SleepDurationStatsData {
+  message: string
+  error: string
+  data: SleepDurationDataPoint[]
+}
+
+// Eficiencia del Sueño
+export interface SleepEfficiencyDataPoint {
+  date: string
+  sleep_efficiency: number
+  day_index: number
+}
+
+export interface SleepEfficiencyStatsData {
+  message: string
+  error: string
+  data: SleepEfficiencyDataPoint[]
+}
+
+// Interrupciones del Sueño
+export interface SleepInterruptionsDataPoint {
+  date: string
+  sleep_interruptions: number
+  day_index: number
+}
+
+export interface SleepInterruptionsStatsData {
+  message: string
+  error: string
+  data: SleepInterruptionsDataPoint[]
+}
+
+// SpO2
+export interface Spo2DataPoint {
+  date: string
+  spo2: number
+  day_index: number
+}
+
+export interface Spo2StatsData {
+  message: string
+  error: string
+  data: Spo2DataPoint[]
+}
+
+// Tipos de respuesta para cada endpoint
+export type CaloriesStatsResponse = CaloriesStatsData | ApiErrorResponse
+export type HeartRateStatsResponse = HeartRateStatsData | ApiErrorResponse
+export type SleepDurationStatsResponse = SleepDurationStatsData | ApiErrorResponse
+export type SleepEfficiencyStatsResponse = SleepEfficiencyStatsData | ApiErrorResponse
+export type SleepInterruptionsStatsResponse = SleepInterruptionsStatsData | ApiErrorResponse
+export type Spo2StatsResponse = Spo2StatsData | ApiErrorResponse
