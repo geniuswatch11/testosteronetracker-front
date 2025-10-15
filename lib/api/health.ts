@@ -56,7 +56,7 @@ export const healthApi = {
 
     try {
       // Hacer la petición a la API usando apiRequest
-      const response = await apiRequest(`http://localhost:8000/v1/api/whoopdata/${token}?interval=${apiInterval}`)
+      const response = await apiRequest(`https://main.geniushpro.com/v1/api/whoopdata/${token}?interval=${apiInterval}`)
 
       // Manejar errores de servidor explícitamente
       if (response.status === 500) {

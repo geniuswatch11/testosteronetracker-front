@@ -67,7 +67,7 @@ export const USERNAME_KEY = "username"
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
     try {
-      const response = await fetch("http://localhost:3001/login", {
+      const response = await fetch("https://api.geniushpro.com/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -135,7 +135,7 @@ export const authApi = {
 
   register: async (credentials: RegisterCredentials): Promise<RegisterResponse> => {
     try {
-      const response = await fetch("http://localhost:8000/v1/api/register/", {
+      const response = await fetch("https://main.geniushpro.com/v1/api/register/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -193,7 +193,7 @@ export const authApi = {
     // Llamar al endpoint de logout del backend
     try {
       if (token && refreshToken) {
-        const response = await fetch("http://localhost:8000/v1/api/logout/", {
+        const response = await fetch("https://main.geniushpro.com/v1/api/logout/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -274,7 +274,7 @@ export const authApi = {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/v1/api/update-record", {
+      const response = await fetch("https://main.geniushpro.com/v1/api/update-record", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -320,7 +320,7 @@ export const authApi = {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/v1/api/update-record", {
+      const response = await fetch("https://main.geniushpro.com/v1/api/update-record", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -355,7 +355,7 @@ export const authApi = {
 
   resendOtp: async (data: ResendOtpRequestData): Promise<ResendOtpResponseData> => {
     try {
-      const response = await fetch("http://localhost:8000/v1/api/resend-otp/", {
+      const response = await fetch("https://main.geniushpro.com/v1/api/resend-otp/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -382,7 +382,7 @@ export const authApi = {
 
   verifyAccount: async (data: VerifyAccountRequestData): Promise<VerifyAccountResponseData> => {
     try {
-      const response = await fetch("http://localhost:8000/v1/api/verify-account/", {
+      const response = await fetch("https://main.geniushpro.com/v1/api/verify-account/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -409,7 +409,7 @@ export const authApi = {
 
   passwordResetRequest: async (data: PasswordResetRequestData): Promise<PasswordResetResponseData> => {
     try {
-      const response = await fetch("http://localhost:8000/v1/api/password-reset/request/", {
+      const response = await fetch("https://main.geniushpro.com/v1/api/password-reset/request/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -438,7 +438,7 @@ export const authApi = {
 
   passwordResetValidateOtp: async (data: PasswordResetValidateOtpData): Promise<PasswordResetValidateOtpResponseData> => {
     try {
-      const response = await fetch("http://localhost:8000/v1/api/password-reset/validate-otp/", {
+      const response = await fetch("https://main.geniushpro.com/v1/api/password-reset/validate-otp/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -467,7 +467,7 @@ export const authApi = {
 
   passwordResetConfirm: async (data: PasswordResetConfirmData): Promise<PasswordResetConfirmResponseData> => {
     try {
-      const response = await fetch("http://localhost:8000/v1/api/password-reset/confirm/", {
+      const response = await fetch("https://main.geniushpro.com/v1/api/password-reset/confirm/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -505,7 +505,7 @@ export const authApi = {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/v1/api/me", {
+      const response = await fetch("https://main.geniushpro.com/v1/api/me", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -560,7 +560,7 @@ export const authApi = {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/v1/api/delete-account/", {
+      const response = await fetch("https://main.geniushpro.com/v1/api/delete-account/", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

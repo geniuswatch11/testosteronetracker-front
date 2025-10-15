@@ -19,7 +19,7 @@ export const userApi = {
    */
   getUserProfile: async (): Promise<UserProfileData> => {
     const token = authApi.getToken()
-    const response = await apiRequest("http://localhost:8000/v1/api/me", {
+    const response = await apiRequest("https://main.geniushpro.com/v1/api/me", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -44,7 +44,7 @@ export const userApi = {
    */
   getAvatars: async (): Promise<string[]> => {
     const token = authApi.getToken()
-    const response = await apiRequest("http://localhost:8000/v1/api/avatars/", {
+    const response = await apiRequest("https://main.geniushpro.com/v1/api/avatars/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ export const userApi = {
    */
   updateProfile: async (profileData: UpdateProfileRequestData): Promise<string> => {
     const token = authApi.getToken()
-    const response = await apiRequest("http://localhost:8000/v1/api/me/update/", {
+    const response = await apiRequest("https://main.geniushpro.com/v1/api/me/update/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -98,7 +98,7 @@ export const userApi = {
     const token = authApi.getToken()
     const requestData: UpdateAvatarRequestData = { avatar: avatarUrl }
 
-    const response = await apiRequest("http://localhost:8000/v1/api/me/avatar/", {
+    const response = await apiRequest("https://main.geniushpro.com/v1/api/me/avatar/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -123,7 +123,7 @@ export const userApi = {
   changePassword: async (passwordData: ChangePasswordRequestData): Promise<string> => {
     const token = authApi.getToken()
 
-    const response = await apiRequest("http://localhost:8000/v1/api/me/change-password/", {
+    const response = await apiRequest("https://main.geniushpro.com/v1/api/me/change-password/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

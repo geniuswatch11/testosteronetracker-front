@@ -21,7 +21,7 @@ export const profileApi = {
     }
 
     try {
-      const response = await apiRequest("http://localhost:8000/v1/api/update-record", {
+      const response = await apiRequest("https://main.geniushpro.com/v1/api/update-record", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export const profileApi = {
     }
 
     try {
-      const response = await apiRequest("http://localhost:8000/v1/api/update-record", {
+      const response = await apiRequest("https://main.geniushpro.com/v1/api/update-record", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +127,7 @@ export const profileApi = {
     }
 
     try {
-      const response = await apiRequest("http://localhost:8000/v1/api/update-record", {
+      const response = await apiRequest("https://main.geniushpro.com/v1/api/update-record", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

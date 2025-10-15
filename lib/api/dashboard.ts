@@ -24,7 +24,7 @@ export const dashboardApi = {
     }
 
     try {
-      const response = await apiRequest("http://localhost:8000/v1/api/home/energy-levels/", {
+      const response = await apiRequest("https://main.geniushpro.com/v1/api/home/energy-levels/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export const dashboardApi = {
     }
 
     try {
-      const response = await apiRequest("http://localhost:8000/v1/api/home/basic-metrics/", {
+      const response = await apiRequest("https://main.geniushpro.com/v1/api/home/basic-metrics/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
