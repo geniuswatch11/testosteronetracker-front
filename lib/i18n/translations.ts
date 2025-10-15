@@ -140,6 +140,16 @@ export const translations: Translations = {
       selectAvatar: "Select Avatar",
       avatarUpdated: "Avatar updated successfully",
       avatarUpdateError: "Error updating avatar",
+      deleteAccount: "Delete Account",
+      deleteAccountModal: {
+        title: "Delete Account",
+        message: "This action is permanent and cannot be undone. All your data, including your profile, health records, and device connections will be permanently deleted.",
+        warning: "Are you sure you want to proceed?",
+        confirm: "Yes, Delete My Account",
+        cancel: "Cancel",
+      },
+      deleteAccountSuccess: "Your account has been deleted successfully",
+      deleteAccountError: "Error deleting account. Please try again.",
     },
     stepper: {
       connectDevice: "Connect a device",
@@ -409,6 +419,16 @@ export const translations: Translations = {
       selectAvatar: "Seleccionar Avatar",
       avatarUpdated: "Avatar actualizado correctamente",
       avatarUpdateError: "Error al actualizar el avatar",
+      deleteAccount: "Eliminar Cuenta",
+      deleteAccountModal: {
+        title: "Eliminar Cuenta",
+        message: "Esta acción es permanente y no se puede deshacer. Todos tus datos, incluyendo tu perfil, registros de salud y conexiones de dispositivos serán eliminados permanentemente.",
+        warning: "¿Estás seguro de que deseas continuar?",
+        confirm: "Sí, Eliminar Mi Cuenta",
+        cancel: "Cancelar",
+      },
+      deleteAccountSuccess: "Tu cuenta ha sido eliminada exitosamente",
+      deleteAccountError: "Error al eliminar la cuenta. Por favor intenta de nuevo.",
     },
     stepper: {
       connectDevice: "Conectar un dispositivo",

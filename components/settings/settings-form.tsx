@@ -61,6 +61,8 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { isDisconnecting, error: disconnectionError, disconnectDevice, resetDisconnection } = useDeviceDisconnection();
   
   // Estado de conexión del dispositivo
@@ -334,6 +336,22 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
     }
   };
 
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      await authApi.deleteAccount();
+      toast.success(t("settings.deleteAccountSuccess"));
+      setIsDeleteModalOpen(false);
+      // Redirigir al login después de eliminar la cuenta
+      router.push("/login");
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      toast.error(t("settings.deleteAccountError"));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 text-white">
       <div className="flex flex-col items-center space-y-4">
@@ -496,10 +514,52 @@ export default function SettingsForm({ userProfile, avatars, onProfileUpdated }:
         <LanguageToggle />
       </div>
 
+      {/* Delete Account */}
+      <Button 
+        type="button"
+        variant="outline" 
+        onClick={() => setIsDeleteModalOpen(true)} 
+        className="w-full border-danger-600 text-danger-600 hover:bg-danger-600/10 hover:text-danger-500"
+      >
+        {t("settings.deleteAccount")}
+      </Button>
+
       {/* Log Out */}
       <Button variant="outline" onClick={logout} className="w-full border-danger-600 text-danger-600 hover:bg-danger-600/10 hover:text-danger-500">
         {t("settings.logOut")}
       </Button>
+
+      {/* Delete Account Modal */}
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogContent className="bg-neutral-900 text-white border-neutral-700">
+          <DialogHeader>
+            <DialogTitle className="text-danger-600">{t("settings.deleteAccountModal.title")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <p className="text-neutral-300">{t("settings.deleteAccountModal.message")}</p>
+            <p className="text-neutral-200 font-semibold">{t("settings.deleteAccountModal.warning")}</p>
+            <div className="flex gap-3 mt-6">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="flex-1 border-neutral-600 text-white hover:bg-neutral-800"
+                disabled={isDeleting}
+              >
+                {t("settings.deleteAccountModal.cancel")}
+              </Button>
+              <Button
+                type="button"
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+                className="flex-1 bg-danger-600 hover:bg-danger-500 text-white font-bold"
+              >
+                {isDeleting ? t("common.loading") : t("settings.deleteAccountModal.confirm")}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </form>
   )
 }

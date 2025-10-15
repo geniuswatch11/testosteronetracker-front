@@ -548,4 +548,54 @@ export const authApi = {
   setUsername: (username: string) => {
     localStorage.setItem(USERNAME_KEY, username)
   },
+
+  /**
+   * Eliminar la cuenta del usuario autenticado
+   */
+  deleteAccount: async (): Promise<void> => {
+    const token = authApi.getToken()
+    
+    if (!token) {
+      throw new Error("No authentication token found")
+    }
+
+    try {
+      const response = await fetch("http://localhost:8000/v1/api/delete-account/", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Error al eliminar la cuenta")
+      }
+
+      // Limpiar localStorage y cookies después de eliminar la cuenta
+      localStorage.removeItem(AUTH_TOKEN_KEY)
+      localStorage.removeItem(REFRESH_TOKEN_KEY)
+      localStorage.removeItem(USER_PROFILE_KEY)
+      localStorage.removeItem(SPIKE_CONNECT_KEY)
+      localStorage.removeItem(IS_COMPLETE_KEY)
+      localStorage.removeItem(USERNAME_KEY)
+      localStorage.removeItem("user_id")
+      localStorage.removeItem("profile_id")
+      localStorage.removeItem("locale")
+      localStorage.removeItem("avatars_cache")
+      localStorage.removeItem("avatars_cache_timestamp")
+      localStorage.removeItem("spike_provider")
+      localStorage.removeItem("spike_id")
+
+      // Limpiar todas las cookies
+      Cookies.remove(AUTH_TOKEN_KEY)
+      Cookies.remove(SPIKE_CONNECT_KEY)
+      Cookies.remove(IS_COMPLETE_KEY)
+      Cookies.remove("locale")
+    } catch (error) {
+      console.error("Delete account error:", error)
+      throw error
+    }
+  },
 }

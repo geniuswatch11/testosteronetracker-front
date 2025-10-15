@@ -8,6 +8,15 @@ export function middleware(request: NextRequest) {
   const isAuthenticated = !!token
 
   const isAuthRoute = request.nextUrl.pathname.startsWith("/login") || request.nextUrl.pathname.startsWith("/register")
+  
+  // Rutas públicas que no requieren autenticación
+  const isPublicRoute = 
+    request.nextUrl.pathname.startsWith("/privacy-cookies-policy") ||
+    request.nextUrl.pathname.startsWith("/verify-otp") ||
+    request.nextUrl.pathname.startsWith("/coming-soon") ||
+    request.nextUrl.pathname.startsWith("/synchronizing") ||
+    request.nextUrl.pathname.startsWith("/acceptdevice")
+  
   const isProtectedRoute =
     request.nextUrl.pathname.startsWith("/dashboard") ||
     request.nextUrl.pathname.startsWith("/settings") ||
